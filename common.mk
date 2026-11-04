@@ -276,6 +276,10 @@ PRODUCT_PACKAGES += \
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
+    hardware/lineage/compat \
+    hardware/qcom-caf/sm6375-6.1 \
+    hardware/qcom-caf/sm6375-6.1/data-ipa-cfg-mgr \
+    hardware/qcom-caf/wlan/qcwcn \
     hardware/motorola
 
 # Telephony
@@ -361,3 +365,9 @@ $(call inherit-product, vendor/motorola/sm6375-common/sm6375-common-vendor.mk)
 
 # Kernel headers
 $(call soong_config_set_bool,qcom_kernel,use_prebuilt_headers,true)
+
+# Qualcomm platform
+PRODUCT_BOARD_PLATFORM := blair
+PRODUCT_USES_QCOM_HARDWARE := true
+USE_DEVICE_SPECIFIC_DATA_IPA_CFG_MGR := true
+$(call soong_config_set,qtidisplay,default,true)
