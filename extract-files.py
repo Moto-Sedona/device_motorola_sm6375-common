@@ -51,34 +51,20 @@ blob_fixups: blob_fixups_user_type = {
     'system_ext/lib64/libwfdmmsrc_system.so': blob_fixup()
         .add_needed('libaudiobase.so')
         .add_needed('libgui_shim.so'),
-    'vendor/lib64/hw/camera.qcom.so': blob_fixup()
-        .replace_needed('libsnsapi.so', 'libsnsapi-fogos.so'),
     'system_ext/lib64/libwfdservice.so': blob_fixup()
         .replace_needed('android.media.audio.common.types-V4-cpp.so', 'android.media.audio.common.types-V5-cpp.so')
         .add_needed('libaudiobase.so'),
     'system_ext/lib64/libwfdnative.so': blob_fixup()
         .add_needed('libinput_shim.so'),
-    (
-        'vendor/bin/hw/vendor.qti.camera.provider-service_64',
-        'vendor/lib64/camx.provider-impl.so',
-        'vendor/lib64/libdpps.so',
-        'vendor/lib64/liblearningmodule.so',
-        'vendor/lib64/libsnapdragoncolor-manager.so',
-    ): blob_fixup()
+    ('vendor/lib64/libdpps.so', 'vendor/lib64/libsnapdragoncolor-manager.so'): blob_fixup()
         .replace_needed('libtinyxml2.so', 'libtinyxml2-v34.so'),
-    (
-        'vendor/bin/qcc-vendor',
-        'vendor/bin/xtra-daemon',
-        'vendor/lib64/libqcc_sdk.so',
-    ): blob_fixup()
+    ('vendor/bin/qcc-vendor', 'vendor/bin/xtra-daemon', 'vendor/lib64/libqcc_sdk.so'): blob_fixup()
         .add_needed('libbinder_shim.so'),
     'vendor/lib64/libqcodec2_core.so': blob_fixup()
         .add_needed('libcodec2_shim.so'),
     'vendor/etc/seccomp_policy/qcrilnr@2.0.policy': blob_fixup()
         .add_line_if_missing('getppid: 1')
         .add_line_if_missing('uname: 1'),
-    'vendor/lib64/libsensorndkbridge.so': blob_fixup()
-        .replace_needed('android.hardware.sensors-V2-ndk.so', 'android.hardware.sensors-V3-ndk.so'),
     'system_ext/etc/permissions/moto-telephony.xml': blob_fixup()
         .regex_replace('/system/', '/system_ext/'),
 }  # fmt: skip
