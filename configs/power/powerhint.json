@@ -303,16 +303,6 @@
       "ResetOnInit": true
     },
     {
-      "Name": "DoubleTapToWake",
-      "Path": "/sys/class/touchscreen/primary/gesture",
-      "Values": [
-        "0",
-        "1"
-      ],
-      "DefaultIndex": 0,
-      "ResetOnInit": true
-    },
-    {
       "Name": "PowerHALMainState",
       "Path": "vendor.powerhal.state",
       "Values": [
@@ -458,7 +448,6 @@
       "Duration": 0,
       "Value": "5161"
     },
-
     {
       "PowerHint": "INTERACTIVE",
       "Node": "CPULittleClusterUpRateLimit",
@@ -506,12 +495,6 @@
       "Node": "SchedBusyHystEnableCPUs",
       "Duration": 0,
       "Value": "15"
-    },
-    {
-      "PowerHint": "DOUBLE_TAP_TO_WAKE",
-      "Node": "DoubleTapToWake",
-      "Duration": 0,
-      "Value": "1"
     },
     {
       "PowerHint": "LAUNCH",
@@ -679,7 +662,7 @@
       "PowerHint": "GAME",
       "Node": "CPULittleClusterMinFreq",
       "Duration": 0,
-       "Value": "9999999"
+      "Value": "9999999"
     },
     {
       "PowerHint": "GAME",
