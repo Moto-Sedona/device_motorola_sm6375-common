@@ -555,6 +555,13 @@ vendor/lib64/libadsp_default_listener.so
 vendor/lib64/libadsprpc.so
 vendor/lib64/libloadalgo_stub.so
 
+# Charger
+vendor/bin/charge_only_mode
+vendor/bin/hvdcp_opti
+vendor/bin/init.qti.chg_policy.sh
+vendor/etc/init/vendor.qti.hardware.charger_monitor@1.0-service.rc
+vendor/etc/charger_fw_fstab.qti
+
 # Init
 vendor/etc/init/hw/init.qti.ufs.rc
 
