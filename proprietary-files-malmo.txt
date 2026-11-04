@@ -546,3 +546,17 @@ vendor/lib64/libwfduibcsrcinterface_vendor.so
 vendor/lib64/libwfdutils_proprietary.so
 vendor/lib64/vendor.qti.hardware.wifidisplaysession@1.0.so;MODULE_SUFFIX=_vendor
 vendor/lib64/vendor.qti.hardware.wifidisplaysessionl@1.0-halimpl.so
+
+# Init
+vendor/etc/init/hw/init.qti.ufs.rc
+
+# IPA Firmware
+vendor/etc/init/ipa_fws.rc
+
+# Kernel
+vendor/bin/init.kernel.post_boot-blair.sh
+vendor/bin/init.kernel.post_boot-holi.sh
+vendor/bin/init.kernel.post_boot.sh
+vendor/bin/init.qti.kernel.sh
+vendor/bin/init.qti.write.sh
+vendor/bin/system_dlkm_modprobe.sh

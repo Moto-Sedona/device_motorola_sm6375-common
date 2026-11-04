@@ -1,4 +1,5 @@
 # Charge only mode configuration
+
 import /vendor/etc/init/hw/init.mmi.charge_only.rc
 
 on early-boot

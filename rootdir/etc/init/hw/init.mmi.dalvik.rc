@@ -1,3 +1,5 @@
+
+
 on property:ro.vendor.hw.ram=4GB
     setprop dalvik.vm.heapstartsize 8m
     setprop dalvik.vm.heapgrowthlimit 256m
