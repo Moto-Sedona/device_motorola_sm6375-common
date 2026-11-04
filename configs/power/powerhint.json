@@ -1,6 +1,26 @@
 {
   "Nodes": [
     {
+      "Name": "GPUBusSplit",
+      "Path": "/sys/class/kgsl/kgsl-3d0/bus_split",
+      "Values": [
+        "0",
+        "1"
+      ],
+      "DefaultIndex": 1,
+      "ResetOnInit": true
+    },
+    {
+      "Name": "LittleCoreCtlMinCpus",
+      "Path": "/sys/devices/system/cpu/cpu0/core_ctl/min_cpus",
+      "Values": [
+        "6",
+        "4"
+      ],
+      "DefaultIndex": 1,
+      "ResetOnInit": true
+    },
+    {
       "Name": "CPULittleClusterMaxFreq",
       "Path": "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq",
       "Values": [
@@ -264,6 +284,30 @@
     }
   ],
   "Actions": [
+    {
+      "PowerHint": "LAUNCH",
+      "Node": "GPUBusSplit",
+      "Duration": 5000,
+      "Value": "0"
+    },
+    {
+      "PowerHint": "EXPENSIVE_RENDERING",
+      "Node": "GPUBusSplit",
+      "Duration": 0,
+      "Value": "0"
+    },
+    {
+      "PowerHint": "LAUNCH",
+      "Node": "LittleCoreCtlMinCpus",
+      "Duration": 5000,
+      "Value": "6"
+    },
+    {
+      "PowerHint": "INTERACTION",
+      "Node": "LittleCoreCtlMinCpus",
+      "Duration": 0,
+      "Value": "6"
+    },
     {
       "PowerHint": "SUSTAINED_PERFORMANCE",
       "Node": "PowerHALMainState",
@@ -545,6 +589,32 @@
       "Node": "GPUMinFreq",
       "Duration": 0,
       "Value": "650000000"
+    }
+  ],
+  "AdpfConfig": [
+    {
+      "Name": "ADPF_DEFAULT",
+      "PID_On": true,
+      "PID_Po": 5.0,
+      "PID_Pu": 3.0,
+      "PID_I": 0.001,
+      "PID_I_Init": 200,
+      "PID_I_High": 512,
+      "PID_I_Low": -120,
+      "PID_Do": 500.0,
+      "PID_Du": 0.0,
+      "SamplingWindow_P": 1,
+      "SamplingWindow_I": 0,
+      "SamplingWindow_D": 1,
+      "UclampMin_On": true,
+      "UclampMin_Init": 100,
+      "UclampMin_LoadUp": 200,
+      "UclampMin_LoadReset": 300,
+      "UclampMin_High": 480,
+      "UclampMin_Low": 0,
+      "ReportingRateLimitNs": 166666660,
+      "TargetTimeFactor": 1.0,
+      "StaleTimeFactor": 10.0
     }
   ]
 }
