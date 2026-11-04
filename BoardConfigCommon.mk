@@ -195,3 +195,5 @@ include vendor/motorola/sm6375-common/BoardConfigVendor.mk
 
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/manifest_radio.xml
 $(call soong_config_set,rmnetctl,old_rmnet_data,true)
+
+AUDIO_FEATURE_ENABLED_HAL_V7 := true
