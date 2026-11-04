@@ -80,3 +80,75 @@ vendor/lib64/libllvm-qgl.so
 
 # Graphics Vulkan
 vendor/lib64/hw/vulkan.adreno.so
+
+# Media
+system_ext/lib64/libmmosal.so
+system_ext/lib64/libmmparser_lite.so
+vendor/bin/hw/vendor.qti.media.c2@1.0-service
+vendor/etc/init/vendor.qti.media.c2@1.0-service.rc
+vendor/etc/seccomp_policy/codec2.vendor.base-arm64.policy
+vendor/etc/seccomp_policy/codec2.vendor.ext-arm64.policy
+vendor/lib64/libAlacSwDec.so
+vendor/lib64/libApeSwDec.so
+vendor/lib64/libEvrcSwCodec.so
+vendor/lib64/libFlacSwDec.so
+vendor/lib64/libQcelp13SwCodec.so
+vendor/lib64/libdsd2pcm.so
+vendor/lib64/libqc2colorconvertfilter.so
+vendor/lib64/libqc2filter.so
+vendor/lib64/libqcodec2_base.so
+vendor/lib64/libqcodec2_basecodec.so
+vendor/lib64/libqcodec2_core.so
+vendor/lib64/libqcodec2_filterbase.so
+vendor/lib64/libqcodec2_hooks.so
+vendor/lib64/libqcodec2_mockfilter.so
+vendor/lib64/libqcodec2_mockqc2filter.so
+vendor/lib64/libqcodec2_platform.so
+vendor/lib64/libqcodec2_utils.so
+vendor/lib64/libqcodec2_v4l2codec.so
+vendor/lib64/libvideotxr.so
+vendor/lib64/qti.video.utils.videobufferlayout.so
+
+# Media Configs
+vendor/etc/media_blair/video_system_specs.json
+vendor/etc/media_codecs_blair.xml
+vendor/etc/media_codecs_performance_blair.xml
+vendor/etc/media_profiles_blair.xml
+
+# Media Firmware
+vendor/firmware/venus.mbn
+vendor/firmware/venus_4mb.mbn
+vendor/firmware/venus_4mb_ecdsa.mbn
+vendor/firmware/venus_4mb_unsigned.mbn
+vendor/firmware/venus_4mb_v6.mbn
+vendor/firmware/venus_4mb_v6_rsa.mbn
+vendor/firmware/venus_4mb_v7.mbn
+vendor/firmware/venus_5mb.mbn
+vendor/firmware/venus_5mb_ecdsa.mbn
+vendor/firmware/venus_5mb_unsigned.mbn
+vendor/firmware/venus_5mb_v6.mbn
+vendor/firmware/venus_5mb_v6_rsa.mbn
+vendor/firmware/venus_5mb_v7.mbn
+vendor/firmware/venus_ecdsa.mbn
+vendor/firmware/venus_unsigned.mbn
+vendor/firmware/venus_v6.mbn
+vendor/firmware/venus_v6_rsa.mbn
+vendor/firmware/venus_v7.mbn
+
+# VPP
+vendor/bin/hw/qconfigservice
+vendor/bin/qconfigfunctest
+vendor/etc/init/qconfig.rc
+vendor/etc/vintf/manifest/vendor.qti.hardware.qconfig-service.xml
+vendor/lib64/libqconfigclient.so
+vendor/lib64/vendor.qti.hardware.qconfig-V1-ndk.so
+vendor/lib64/vendor.qti.hardware.vpp@1.1.so
+
+# VPU Firmware
+vendor/firmware/vpu20_1v.mbn
+vendor/firmware/vpu20_1v_unsigned.mbn
+vendor/firmware/vpu20_4v.mbn
+vendor/firmware/vpu20_4v_unsigned.mbn
+
+# Android 17 HEIF compatibility
+system/lib64/libheif.so
