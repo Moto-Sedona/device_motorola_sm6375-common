@@ -230,7 +230,13 @@ PRODUCT_PACKAGES += \
 
 # Power
 PRODUCT_PACKAGES += \
-    android.hardware.power-service-qti
+    android.hardware.power-service.pixel-libperfmgr \
+    libqti-perfd-client
+PRODUCT_SOONG_NAMESPACES += \
+    hardware/google/interfaces \
+    hardware/google/pixel \
+    hardware/google/pixel/power-libperfmgr \
+    hardware/qcom-caf/common/libqti-perfd-client
 
 # Properties
 PRODUCT_VENDOR_PROPERTY_BLACKLIST := \
