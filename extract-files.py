@@ -65,6 +65,8 @@ blob_fixups: blob_fixups_user_type = {
     'vendor/etc/seccomp_policy/qcrilnr@2.0.policy': blob_fixup()
         .add_line_if_missing('getppid: 1')
         .add_line_if_missing('uname: 1'),
+    'vendor/lib64/libsensorndkbridge.so': blob_fixup()
+        .replace_needed('android.hardware.sensors-V2-ndk.so', 'android.hardware.sensors-V3-ndk.so'),
     'system_ext/etc/permissions/moto-telephony.xml': blob_fixup()
         .regex_replace('/system/', '/system_ext/'),
 }  # fmt: skip
