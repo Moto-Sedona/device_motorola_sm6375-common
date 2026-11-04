@@ -152,3 +152,81 @@ vendor/firmware/vpu20_4v_unsigned.mbn
 
 # Android 17 HEIF compatibility
 system/lib64/libheif.so
+
+# Connection Security
+vendor/bin/qwesd
+vendor/bin/ssgtzd
+vendor/etc/init/qwesd.rc
+vendor/etc/init/ssgtzd.rc
+vendor/etc/seccomp_policy/qwesd@2.0.policy
+vendor/etc/ssg/ta_config.json
+vendor/etc/ssg/tz_whitelist.json
+
+# DRM
+vendor/bin/hw/vendor.qti.hardware.qseecom@1.0-service
+vendor/bin/qseecomd
+vendor/etc/init/qseecomd.rc
+vendor/etc/init/vendor.qti.hardware.qseecom@1.0-service.rc
+vendor/etc/vintf/manifest/vendor.qti.hardware.qseecom@1.0-service.xml
+vendor/etc/gpfspath_oem_config.xml
+vendor/lib64/hw/vendor.qti.hardware.qseecom@1.0-impl.so
+vendor/lib64/libGPQTEEC_vendor.so
+vendor/lib64/libGPreqcancel.so
+vendor/lib64/libQSEEComAPI.so
+vendor/lib64/libbase64.so
+vendor/lib64/libcpion.so
+vendor/lib64/libdrmfs.so
+vendor/lib64/libdrmtime.so
+vendor/lib64/libdrmutils.so
+vendor/lib64/libgpt.so
+vendor/lib64/libops.so
+vendor/lib64/libqisl.so
+vendor/lib64/librpmb.so
+vendor/lib64/libspl.so
+vendor/lib64/libssd.so
+vendor/lib64/libtzdrmgenprov.so
+vendor/lib64/vendor.qti.hardware.qseecom-V1-ndk.so
+vendor/lib64/vendor.qti.hardware.qseecom@1.0.so
+
+# DRM-HDCP
+vendor/lib64/libhdcpsrm.so
+vendor/lib64/libmm-hdcpmgr.so
+
+# Identity
+vendor/bin/hw/android.hardware.identity-service-qti
+vendor/etc/init/android.hardware.identity-service-qti.rc
+vendor/etc/vintf/manifest/manifest_identity_credential.xml
+vendor/lib64/libqtiidentitycredential.so
+
+# Secure Element
+vendor/bin/hw/android.hardware.secure_element-service.qti
+vendor/etc/init/android.hardware.secure_element-service.qti.rc
+vendor/etc/vintf/manifest/secure_element-service.xml
+vendor/lib64/hw/libEseUtils.so
+vendor/lib64/libGPQeSE.so
+
+# TEE Connector
+vendor/bin/hw/vendor.qti.hardware.qteeconnector@1.0-service
+vendor/etc/init/vendor.qti.hardware.qteeconnector@1.0-service.rc
+vendor/etc/vintf/manifest/vendor.qti.hardware.qteeconnector@1.0-service.xml
+vendor/lib64/hw/vendor.qti.hardware.qteeconnector@1.0-impl.so
+vendor/lib64/libGPMTEEC_vendor.so
+vendor/lib64/libGPTEE_vendor.so
+vendor/lib64/libGPreqcancel_svc.so
+vendor/lib64/libQTEEConnector_vendor.so
+vendor/lib64/vendor.qti.hardware.qteeconnector-V1-ndk.so
+vendor/lib64/vendor.qti.hardware.qteeconnector@1.0.so
+
+# Trusted User Interface
+vendor/lib64/libTrustedUIAIDL.so
+vendor/lib64/libTxPwrJni.so
+vendor/lib64/libloadtrusteduiapp.so
+vendor/lib64/libminkdescriptor.so
+vendor/lib64/libminksocket_vendor.so
+vendor/lib64/libsi.so
+vendor/lib64/vendor.qti.hardware.trustedui-V1-ndk.so
+
+# Widevine DRM
+vendor/apex/com.google.android.widevine.nonupdatable.apex
+vendor/lib64/liboemcrypto.so
+vendor/lib64/libtrustedapploader.so
