@@ -297,3 +297,30 @@ vendor/lib64/libwifiobserver.so
 vendor/lib64/libxtadapter.so
 vendor/lib64/vendor.qti.gnss-V5-ndk.so
 vendor/lib64/vendor.qti.gnss-service.so
+
+# PD
+vendor/bin/pd-mapper
+vendor/lib64/libpdmapper.so
+vendor/lib64/libpdnotifier.so
+
+# Peripheral manager
+vendor/bin/pm-proxy
+vendor/bin/pm-service
+vendor/lib64/libperipheral_client.so
+
+# Remote FS
+vendor/bin/rmt_storage
+vendor/etc/init/vendor.qti.rmt_storage.rc
+
+# TFTP
+vendor/bin/tftp_server
+vendor/etc/init/vendor.qti.tftp.rc
+
+# Wi-Fi
+vendor/bin/cnss-daemon
+vendor/etc/init/init.vendor.wlan.rc
+vendor/etc/wifi/WCNSS_mot_cfg.ini;SYMLINK=vendor/firmware/wlan/qca_cld/WCNSS_mot_cfg.ini
+vendor/etc/wifi/WCNSS_qcom_cfg.ini;SYMLINK=vendor/firmware/wlan/qca_cld/WCNSS_qcom_cfg.ini
+vendor/etc/wifi/p2p_supplicant_overlay.conf
+vendor/etc/wifi/wpa_supplicant_overlay.conf
+vendor/lib64/libcert_parse.wpa_s.so

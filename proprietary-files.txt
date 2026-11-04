@@ -224,11 +224,6 @@ vendor/lib64/libqti-perfd-client.so
 vendor/lib64/libqti-perfd.so
 vendor/lib64/libqti-util.so
 
-# Peripheral manager
-vendor/bin/pm-proxy
-vendor/bin/pm-service
-vendor/lib64/libperipheral_client.so
-
 # Power-off alarm
 vendor/bin/hw/vendor.qti.hardware.alarm@1.0-service
 vendor/bin/power_off_alarm
@@ -293,15 +288,12 @@ vendor/bin/adpl
 vendor/bin/hw/qcrilNrd
 vendor/bin/ks
 vendor/bin/netmgrd
-vendor/bin/pd-mapper
 vendor/bin/port-bridge
 vendor/bin/qmi_motext_hook
 vendor/bin/qrtr-cfg
 vendor/bin/qrtr-ns
 vendor/bin/qti
-vendor/bin/rmt_storage
 vendor/bin/shsusrd
-vendor/bin/tftp_server
 vendor/etc/data/dsi_config.xml
 vendor/etc/data/netmgr_config.xml
 vendor/etc/init/dataadpl.rc
@@ -311,8 +303,6 @@ vendor/etc/init/netmgrd.rc
 vendor/etc/init/port-bridge.rc
 vendor/etc/init/qcrilNrd.rc
 vendor/etc/init/shsusrd.rc
-vendor/etc/init/vendor.qti.rmt_storage.rc
-vendor/etc/init/vendor.qti.tftp.rc
 vendor/etc/qcril_database/upgrade/config/10.0_config.sql;FILEGROUP=proprietary_rildb_config_sql_files
 vendor/etc/qcril_database/upgrade/config/11.0_config.sql;FILEGROUP=proprietary_rildb_config_sql_files
 vendor/etc/qcril_database/upgrade/config/12.0_config.sql;FILEGROUP=proprietary_rildb_config_sql_files
@@ -390,8 +380,6 @@ vendor/lib64/libnetmgr_common.so
 vendor/lib64/libnetmgr_nr_fusion.so
 vendor/lib64/libnetmgr_rmnet_ext.so
 vendor/lib64/libnlnetmgr.so
-vendor/lib64/libpdmapper.so
-vendor/lib64/libpdnotifier.so
 vendor/lib64/libqcmaputils.so
 vendor/lib64/libqcrilNr.so
 vendor/lib64/libqcrilNrFramework.so
@@ -568,9 +556,6 @@ vendor/app/TimeService/TimeService.apk
 vendor/bin/time_daemon
 vendor/etc/init/init.time_daemon.rc
 vendor/lib64/libtime_genoff.so
-
-# WiFi
-vendor/bin/cnss-daemon
 
 # WiFi Display (system) - from marvel_g A171WEH.20
 system/framework/WfdCommon.jar;BOOT_JAR|27251f8421652af8abffb1f3fd9449fe0ec64ee5|6d1f1d953c48a414e978263256e2ed3aec1580b7

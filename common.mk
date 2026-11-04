@@ -349,3 +349,12 @@ PRODUCT_BOARD_PLATFORM := blair
 PRODUCT_USES_QCOM_HARDWARE := true
 USE_DEVICE_SPECIFIC_DATA_IPA_CFG_MGR := true
 $(call soong_config_set,qtidisplay,default,true)
+
+# WLAN firmware paths
+PRODUCT_PACKAGES += \
+    firmware_wlan_adrastea_qcom_cfg_symlink \
+    firmware_wlan_adrastea_mot_cfg_symlink \
+    firmware_wlan_adrastea_mac_symlink
+PRODUCT_COPY_FILES += \
+    external/wireless-regdb/regulatory.db:$(TARGET_COPY_OUT_VENDOR)/firmware/regulatory.db \
+    external/wireless-regdb/regulatory.db.p7s:$(TARGET_COPY_OUT_VENDOR)/firmware/regulatory.db.p7s
