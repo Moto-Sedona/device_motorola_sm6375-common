@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-     SPDX-FileCopyrightText: The LineageOS Project
-     SPDX-License-Identifier: Apache-2.0
--->
 <manifest version="2.0" type="device" target-level="7">
     <hal format="hidl">
         <name>android.hardware.audio</name>
@@ -19,26 +15,11 @@
         <transport>hwbinder</transport>
         <fqname>@1.0::IBluetoothHci/default</fqname>
     </hal>
-    <hal format="hidl" override="true">
-        <name>android.hardware.camera.provider</name>
-        <transport>hwbinder</transport>
-        <fqname>@2.4::ICameraProvider/legacy/0</fqname>
-    </hal>
     <hal format="hidl">
         <name>android.hardware.drm</name>
         <transport>hwbinder</transport>
         <fqname>@1.3::ICryptoFactory/wfdhdcp</fqname>
         <fqname>@1.3::IDrmFactory/wfdhdcp</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.gatekeeper</name>
-        <transport>hwbinder</transport>
-        <fqname>@1.0::IGatekeeper/default</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.keymaster</name>
-        <transport>hwbinder</transport>
-        <fqname>@4.1::IKeymasterDevice/default</fqname>
     </hal>
     <hal format="hidl">
         <name>android.hardware.media.c2</name>
@@ -79,12 +60,6 @@
         <transport>hwbinder</transport>
         <fqname>@1.0::IAnt/default</fqname>
     </hal>
-    <hal format="hidl" override="true">
-        <name>com.motorola.hardware.biometric.fingerprint</name>
-        <transport>hwbinder</transport>
-        <fqname>@1.0::IMotoFingerPrint/default</fqname>
-        <fqname>@1.0::IMotoFingerPrintSensorTest/default</fqname>
-    </hal>
     <hal format="hidl">
         <name>com.qualcomm.qti.dpm.api</name>
         <transport>hwbinder</transport>
@@ -99,12 +74,6 @@
         <name>com.qualcomm.qti.uceservice</name>
         <transport>hwbinder</transport>
         <fqname>@2.3::IUceService/com.qualcomm.qti.uceservice</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>motorola.hardware.camera.desktop</name>
-        <transport>hwbinder</transport>
-        <fqname>@1.0::ICameraDesktop/default</fqname>
-        <fqname>@2.0::ICameraDesktop/default</fqname>
     </hal>
     <hal format="hidl">
         <name>vendor.qti.data.factory</name>
@@ -135,11 +104,6 @@
         <name>vendor.qti.hardware.cacert</name>
         <transport>hwbinder</transport>
         <fqname>@1.0::IService/default</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>vendor.qti.hardware.camera.postproc</name>
-        <transport>hwbinder</transport>
-        <fqname>@1.0::IPostProcService/camerapostprocservice</fqname>
     </hal>
     <hal format="hidl">
         <name>vendor.qti.hardware.capabilityconfigstore</name>
