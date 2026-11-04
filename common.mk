@@ -361,3 +361,6 @@ PRODUCT_COPY_FILES += \
 
 # Inherit from vendor blobs
 $(call inherit-product, vendor/motorola/sm6375-common/sm6375-common-vendor.mk)
+
+# Kernel headers
+$(call soong_config_set_bool,qcom_kernel,use_prebuilt_headers,true)

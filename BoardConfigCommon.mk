@@ -17,33 +17,38 @@ TARGET_CPU_VARIANT_RUNTIME := kryo300
 TARGET_NO_BOOTLOADER := true
 
 # Kernel
-BOARD_BOOT_HEADER_VERSION := 3
+BOARD_BOOT_HEADER_VERSION := 4
 BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_CMDLINE := \
-    androidboot.console=ttyMSM0 \
-    androidboot.hardware=qcom \
-    androidboot.memcg=1 \
-    androidboot.usbcontroller=4e00000.dwc3 \
-    cgroup.memory=nokmem,nosocket \
-    ip6table_raw.raw_before_defrag=1 \
-    iptable_raw.raw_before_defrag=1 \
-    loop.max_part=7 \
-    lpm_levels.sleep_disabled=1 \
-    msm_rtb.filter=0x237 \
-    pcie_ports=compat \
-    service_locator.enable=1 \
-    swiotlb=0
-BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_KERNEL_PAGESIZE := 4096
-BOARD_KERNEL_SEPARATED_DTBO := true
-BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
+BOARD_KERNEL_IMAGE_NAME := Image
 BOARD_RAMDISK_USE_LZ4 := true
-TARGET_KERNEL_SOURCE := kernel/motorola/sm6375
-TARGET_KERNEL_CONFIG := vendor/holi-qgki_defconfig vendor/ext_config/lineage_moto-holi.config
+BOARD_MKBOOTIMG_ARGS := --header_version $(BOARD_BOOT_HEADER_VERSION)
+BOARD_INCLUDE_DTB_IN_BOOTIMG := true
+TARGET_NEEDS_DTBOIMAGE := true
+TARGET_KERNEL_VERSION := 6.1
+KERNEL_PREBUILT_PATH ?= device/motorola/fogos-kernel/6.1
+TARGET_FORCE_PREBUILT_KERNEL := true
+TARGET_PREBUILT_KERNEL := $(KERNEL_PREBUILT_PATH)/Image
+TARGET_KERNEL_SOURCE := $(KERNEL_PREBUILT_PATH)/kernel-headers
+TARGET_KERNEL_CONFIG := fogos_prebuilt_defconfig
+TARGET_PREBUILT_KERNEL_HEADERS := $(KERNEL_PREBUILT_PATH)/kernel-uapi-headers.tar.gz
+TARGET_BOARD_KERNEL_HEADERS := $(KERNEL_PREBUILT_PATH)/kernel-headers
+BOARD_PREBUILT_DTBIMAGE_DIR := $(KERNEL_PREBUILT_PATH)/dtb
+BOARD_PREBUILT_DTBOIMAGE := $(KERNEL_PREBUILT_PATH)/dtbo.img
+BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=4e00000.dwc3 firmware_class.path=/vendor/firmware_mnt/image
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PREBUILT_PATH)/modules.load.recovery))
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD)
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(addprefix $(KERNEL_PREBUILT_PATH)/modules/,$(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD))
+BOARD_VENDOR_KERNEL_MODULES := $(wildcard $(KERNEL_PREBUILT_PATH)/vendor_modules/*.ko)
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PREBUILT_PATH)/modules.load.vendor))
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_PREBUILT_PATH)/modules.blocklist
+BOARD_DO_NOT_STRIP_VENDOR_MODULES := true
 
 # Platform
 BOARD_USES_QCOM_HARDWARE := true
-TARGET_BOARD_PLATFORM := holi
+TARGET_BOARD_PLATFORM := blair
+OVERRIDE_QCOM_HARDWARE_VARIANT := sm6375-6.1
+QCOM_SOONG_NAMESPACE := hardware/qcom-caf/sm6375-6.1
 
 BOARD_ROOT_EXTRA_SYMLINKS := \
     /vendor/fsg:/fsg
@@ -60,7 +65,8 @@ AB_OTA_PARTITIONS += \
     vbmeta \
     vbmeta_system \
     vendor \
-    vendor_boot
+    vendor_boot \
+    vendor_dlkm
 
 # Audio
 AUDIO_FEATURE_ENABLED_AHAL_EXT := false
@@ -98,20 +104,20 @@ BOARD_USES_METADATA_PARTITION := true
 
 # Partitions
 -include vendor/lineage/config/BoardConfigReservedSize.mk
-BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
-BOARD_DTBOIMG_PARTITION_SIZE := 25165824
-BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296
 BOARD_BUILD_VENDOR_RAMDISK_IMAGE := true
+BOARD_USES_VENDOR_DLKMIMAGE := true
+BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := erofs
 BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
-BOARD_MOT_DP_GROUP_PARTITION_LIST := product system system_ext vendor
+BOARD_MOT_DP_GROUP_PARTITION_LIST := product system system_ext vendor vendor_dlkm
 BOARD_SUPER_PARTITION_GROUPS := mot_dp_group
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
 TARGET_COPY_OUT_PRODUCT := product
 TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 TARGET_COPY_OUT_VENDOR := vendor
+TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 
 # Properties
 TARGET_ODM_PROP += $(COMMON_PATH)/odm.prop
@@ -120,10 +126,11 @@ TARGET_SYSTEM_EXT_PROP += $(COMMON_PATH)/system_ext.prop
 TARGET_VENDOR_PROP += $(COMMON_PATH)/vendor.prop
 
 # Recovery
-BOARD_USES_RECOVERY_AS_BOOT := true
-BOARD_INCLUDE_RECOVERY_DTBO := true
-BOARD_INCLUDE_DTB_IN_BOOTIMG := true
-TARGET_NO_RECOVERY := true
+BOARD_USES_RECOVERY_AS_BOOT := false
+BOARD_INCLUDE_RECOVERY_RAMDISK_IN_VENDOR_BOOT := true
+BOARD_MOVE_GSI_AVB_KEYS_TO_VENDOR_BOOT := true
+BOARD_MOVE_RECOVERY_RESOURCES_TO_VENDOR_BOOT := true
+TARGET_NO_RECOVERY := false
 TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
