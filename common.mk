@@ -238,6 +238,9 @@ PRODUCT_SOONG_NAMESPACES += \
     hardware/google/pixel/power-libperfmgr \
     hardware/qcom-caf/common/libqti-perfd-client
 
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/power/powerhint.json:$(TARGET_COPY_OUT_VENDOR)/etc/powerhint.json
+
 # Properties
 PRODUCT_VENDOR_PROPERTY_BLACKLIST := \
     ro.carrier
