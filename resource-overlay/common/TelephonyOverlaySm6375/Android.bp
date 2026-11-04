@@ -1,0 +1,12 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// Telephony defaults from Moto-Sedona sm6375-common. Most importantly this
+// names org.codeaurora.ims as the device MMTEL ImsService; without it
+// ImsResolver never binds the QTI IMS stack and VoLTE cannot register.
+runtime_resource_overlay {
+    name: "TelephonyOverlaySm6375",
+    product_specific: true,
+}

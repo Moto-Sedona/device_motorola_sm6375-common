@@ -360,3 +360,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     external/wireless-regdb/regulatory.db:$(TARGET_COPY_OUT_VENDOR)/firmware/regulatory.db \
     external/wireless-regdb/regulatory.db.p7s:$(TARGET_COPY_OUT_VENDOR)/firmware/regulatory.db.p7s
+
+PRODUCT_PACKAGES += CarrierConfigOverlaySm6375
+
+PRODUCT_PACKAGES += TelephonyOverlaySm6375

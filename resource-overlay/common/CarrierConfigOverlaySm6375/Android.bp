@@ -1,0 +1,12 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// QTI carrier config defaults (from Moto-Sedona sm6375-common), including
+// the per-carrier VoLTE/VT/WFC availability that the forced IMS props rely on.
+runtime_resource_overlay {
+    name: "CarrierConfigOverlaySm6375",
+    product_specific: true,
+    aaptflags: ["--keep-raw-values"],
+}
