@@ -85,8 +85,6 @@ on boot
     # Allow access to dload sysfs node
     chown root system /sys/kernel/dload/emmc_dload
     chmod 0660 /sys/kernel/dload/emmc_dload
-    chown root system /dev/block/bootdevice/by-name/ramdump
-    chmod 0660 /dev/block/bootdevice/by-name/ramdump
     chown root system /sys/kernel/dload/dload_mode
     chmod 0660 /sys/kernel/dload/dload_mode
 
@@ -117,13 +115,6 @@ on boot
     # Allow access to memory hotplug device attributes
     chown system system /sys/kernel/mem-offline/anon_migrate
 
-on post-fs-data
-    # Create directory used for dump collection
-    mkdir /data/vendor/ssrdump 0770 root system
-
-on property:persist.sys.ssr.enable_debug=*
-    write /sys/module/subsys_pil_tz/parameters/enable_debug ${persist.sys.ssr.enable_debug}
-
 on property:persist.sys.mba_boot_timeout=*
     write /sys/module/pil_msa/parameters/pbl_mba_boot_timeout_ms ${persist.sys.mba_boot_timeout}
 
@@ -132,18 +123,6 @@ on property:persist.sys.modem_auth_timeout=*
 
 on property:persist.sys.pil_proxy_timeout=*
     write /sys/module/peripheral_loader/parameters/proxy_timeout_ms ${persist.sys.pil_proxy_timeout}
-
-on property:persist.vendor.ssr.enable_ramdumps=1
-    write /sys/module/subsystem_restart/parameters/enable_ramdumps 1
-
-on property:persist.vendor.ssr.enable_ramdumps=0
-    write /sys/module/subsystem_restart/parameters/enable_ramdumps 0
-
-on property:persist.vendor.sys.rawdump_copy=1
-    write /sys/kernel/dload/emmc_dload 1
-
-on property:persist.vendor.sys.rawdump_copy=0
-    write /sys/kernel/dload/emmc_dload 0
 
 on property:vendor.memory.min_free_kbytes=*
     write /proc/sys/vm/min_free_kbytes ${vendor.memory.min_free_kbytes}

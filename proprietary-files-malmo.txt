@@ -137,7 +137,6 @@ vendor/firmware/venus_v7.mbn
 
 # VPP
 vendor/bin/hw/qconfigservice
-vendor/bin/qconfigfunctest
 vendor/etc/init/qconfig.rc
 vendor/etc/vintf/manifest/vendor.qti.hardware.qconfig-service.xml
 vendor/lib64/libqconfigclient.so
@@ -591,6 +590,9 @@ vendor/lib64/vendor.qti.hardware.sensorscalibrate-V1-ndk.so
 vendor/bin/thermal-engine-v2
 vendor/etc/init/init_thermal-engine-v2.rc
 vendor/lib64/libthermalclient.so
+
+# Runtime logging ABI
+vendor/lib64/libdiag.so
 
 # Init
 vendor/etc/init/hw/init.qti.ufs.rc

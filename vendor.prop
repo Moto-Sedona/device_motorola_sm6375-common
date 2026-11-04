@@ -143,7 +143,6 @@ vendor.hw.fm.init=0
 vendor.hw.sf.IdleLazyResetThresholdT=1000
 vendor.qcom.bluetooth.soc=hastings
 vendor.usb.controller=4e00000.dwc3
-vendor.usb.diag.func.name=ffs
 vendor.usb.dpl.inst.name=dpl
 vendor.usb.qdss.inst.name=qdss_sw
 vendor.usb.rmnet.func.name=gsi

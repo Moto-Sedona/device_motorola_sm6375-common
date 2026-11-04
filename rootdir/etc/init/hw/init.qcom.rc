@@ -102,8 +102,6 @@ on init
     chown root system /sys/fs/cgroup/memory/bg/tasks
     chmod 0660 /sys/fs/cgroup/memory/bg/tasks
 
-on post-fs
-
 on early-boot
     # set RLIMIT_MEMLOCK to 64KB
     setrlimit 8 65536 65536
@@ -199,13 +197,8 @@ on boot
     # bond0 used by FST Manager
     chown wifi wifi /sys/class/net/bond0/bonding/queue_id
 
-    # Allow access to emmc rawdump block partition and dload sysfs node
-    chown root system /dev/block/bootdevice/by-name/rawdump
-    chmod 0660 /dev/block/bootdevice/by-name/rawdump
     chown root system /sys/kernel/dload/emmc_dload
     chmod 0660 /sys/kernel/dload/emmc_dload
-    chown root system /dev/block/bootdevice/by-name/ramdump
-    chmod 0660 /dev/block/bootdevice/by-name/ramdump
     chown root system /sys/kernel/dload/dload_mode
     chmod 0660 /sys/kernel/dload/dload_mode
 
@@ -261,8 +254,6 @@ on boot
 on post-fs-data
     mkdir /data/vendor/misc 01771 system system
 
-    # Create directory used for dump collection
-    mkdir /data/vendor/ssrdump 0770 root system
 
     # Create directory used by display clients
     mkdir /data/vendor/display 0770 system graphics
@@ -290,9 +281,7 @@ on post-fs-data
     mkdir /data/vendor/tombstones 0771 system system
     mkdir /data/vendor/tombstones/rfs 0771 system system
 
-    mkdir /data/vendor/ramdump 0771 root system
     mkdir /data/vendor/bluetooth 0770 bluetooth bluetooth
-    mkdir /data/vendor/ramdump/bluetooth 0770 bluetooth bluetooth
 
     # Create the directories used by the Wireless subsystem
     mkdir /data/vendor/wifi 0770 wifi wifi
@@ -314,7 +303,6 @@ on post-fs-data
     # Create directory used by audio subsystem
     mkdir /data/vendor/audio 0770 audio audio
     mkdir /data/vendor/audio_dsp 0770 media media
-    mkdir /data/vendor/audio/audio_collector 0770 audio audio
 
     # Create directory for audio delta files
     mkdir /data/vendor/audio/acdbdata 0770 media audio
@@ -460,13 +448,6 @@ service vendor.ssr_setup /system/vendor/bin/ssr_setup
     oneshot
     disabled
 
-service vendor.ss_ramdump /system/vendor/bin/subsystem_ramdump
-    class main
-    user system
-    group log sdcard_rw sdcard_r diag system
-    ioprio rt 4
-    disabled
-
 on property:ro.vendor.iocgrp.config=1
     mkdir /dev/blkio
     mount cgroup none /dev/blkio blkio
@@ -479,9 +460,6 @@ on property:ro.vendor.iocgrp.config=1
     write /dev/blkio/blkio.weight 1000
     write /dev/blkio/bg/blkio.weight 100
 
-on property:persist.sys.ssr.enable_debug=*
-    write /sys/module/subsystem_restart/parameters/enable_debug ${persist.sys.ssr.enable_debug}
-
 on property:persist.sys.mba_boot_timeout=*
     write /sys/module/pil_msa/parameters/pbl_mba_boot_timeout_ms ${persist.sys.mba_boot_timeout}
 
@@ -493,22 +471,6 @@ on property:persist.sys.pil_proxy_timeout=*
 
 on property:persist.vendor.ssr.restart_level=*
     start vendor.ssr_setup
-
-on property:persist.vendor.ssr.enable_ramdumps=1
-    write /sys/module/subsystem_restart/parameters/enable_ramdumps 1
-    write /sys/module/qcom_ramdump/parameters/enable_dump_collection 1
-    mkdir /data/vendor/ramdump_ssr 770 system system
-    start vendor.ss_ramdump
-
-on property:persist.vendor.ssr.enable_ramdumps=0
-    write /sys/module/subsystem_restart/parameters/enable_ramdumps 0
-    write /sys/module/qcom_ramdump/parameters/enable_dump_collection 0
-
-on property:persist.vendor.sys.rawdump_copy=1
-    write /sys/kernel/dload/emmc_dload 1
-
-on property:persist.vendor.sys.rawdump_copy=0
-    write /sys/kernel/dload/emmc_dload 0
 
 on property:sys.boot_completed=1
     write /dev/kmsg "Boot completed "
@@ -530,10 +492,6 @@ on property:sys.boot_completed=1
     write /sys/devices/virtual/cvp/cvp/boot 1
 
 # corefile limit
-
-on property:persist.debug.trace=1
-    mkdir /data/core 0777 root root
-    write /proc/sys/kernel/core_pattern "/data/core/%E.%p.%e"
 
 on property:vendor.media.target.version=*
     setprop vendor.sys.media.target.version ${vendor.media.target.version}
@@ -901,14 +859,6 @@ service chre /vendor/bin/chre
 on property:vendor.chre.enabled=0
    stop chre
 
-service bugreport /system/bin/dumpstate -d -p -B -z -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
-    class main
-    disabled
-    oneshot
-    keycodes 114 115 116
-
-#Set GPU Opengles version
-
 on property:vendor.opengles.version=*
     setprop ro.opengles.version ${vendor.opengles.version}
 
@@ -916,9 +866,3 @@ on property:vendor.opengles.version=*
 
 on property:vendor.gpu.available_frequencies=*
     setprop ro.vendor.gpu.available_frequencies ${vendor.gpu.available_frequencies}
-
-# No 6.1 msm_video driver yet: the Qualcomm video Codec2 store is not declared
-# (FOGOS_HW_VIDEO), so keep its blob service from crash-looping.
-
-on property:init.svc.vendor-qti-media-c2-hal-1-0=running && property:ro.vendor.fogos.hw_video=false
-    stop vendor-qti-media-c2-hal-1-0

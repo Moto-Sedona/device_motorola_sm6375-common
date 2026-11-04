@@ -13,7 +13,6 @@ MODPROBE="/vendor/bin/modprobe"
 
 # vendor modules partition could be /vendor/lib/modules or /vendor_dlkm/lib/modules
 POSSIBLE_DIRS="${VENDOR_DLKM_DIR} ${VENDOR_DIR}"
-audio_arch=`getprop ro.boot.audio`
 boot_device=`getprop ro.boot.device`
 
 for dir in ${POSSIBLE_DIRS} ;
@@ -22,18 +21,10 @@ do
 		continue
 	fi
 
-	if [ "$audio_arch" == "audioreach" ]; then
-		if [ -e ${dir}/modules.audio.ar.blocklist ]; then
-			audio_blocklist_expr="$(sed -n -e 's/blocklist \(.*\)/\1/p' ${dir}/modules.audio.ar.blocklist | sed -e 's/^/-e /')"
-		else
-			audio_blocklist_expr="-e %"
-		fi
+	if [ -e ${dir}/modules.audio.legacy.blocklist ]; then
+		audio_blocklist_expr="$(sed -n -e 's/blocklist \(.*\)/\1/p' ${dir}/modules.audio.legacy.blocklist | sed -e 's/^/-e /')"
 	else
-		if [ -e ${dir}/modules.audio.legacy.blocklist ]; then
-			audio_blocklist_expr="$(sed -n -e 's/blocklist \(.*\)/\1/p' ${dir}/modules.audio.legacy.blocklist | sed -e 's/^/-e /')"
-		else
-			audio_blocklist_expr="-e %"
-		fi
+		audio_blocklist_expr="-e %"
 	fi
 
 	if [ -e ${dir}/modules.blocklist ]; then

@@ -27,9 +27,6 @@ vendor/lib/rfsa/adsp/libsns_low_lat_stream_skel.so;SYMLINK=vendor/lib64/rfsa/ads
 system/lib64/vendor.qti.diaghal-V1-ndk.so:system_ext/lib64/vendor.qti.diaghal-V1-ndk.so
 system_ext/lib64/libdiag_system.so
 system_ext/lib64/vendor.qti.diaghal@1.0.so
-vendor/bin/diag-router
-vendor/etc/init/vendor.qti.diag.rc
-vendor/etc/vintf/manifest/vendor.qti.diag.hal.service.xml
 vendor/lib64/vendor.qti.diaghal@1.0.so;MODULE_SUFFIX=_vendor
 
 # IRQ balance
@@ -194,11 +191,6 @@ vendor/app/IWlanService/IWlanService.apk
 vendor/bin/hw/qcrilNrd
 vendor/bin/adpl
 vendor/bin/ks
-
-# Radio
-vendor/bin/mbm_spy
-
-# RIL
 vendor/bin/netmgrd
 vendor/bin/port-bridge
 vendor/bin/qmi_motext_hook
