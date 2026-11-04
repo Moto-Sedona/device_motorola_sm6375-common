@@ -1,0 +1,11 @@
+set_prop(vendor_init, vendor_camera_prop)
+set_prop(vendor_init, vendor_ims_prop)
+set_prop(vendor_init, vendor_mot_hw_prop)
+set_prop(vendor_init, vendor_powerhal_prop)
+set_prop(vendor_init, vendor_mot_nfc_prop)
+
+allow vendor_init proc_sched_lib_mask_cpuinfo:file w_file_perms;
+allow vendor_init proc_sched:file w_file_perms;
+
+# Allow vendor init to set SSR property
+set_prop(vendor_init, vendor_ssr_prop)

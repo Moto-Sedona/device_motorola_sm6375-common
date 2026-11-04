@@ -1,0 +1,2 @@
+# The stock fogos gatekeeper is a HIDL service.
+hwbinder_use(vendor_hal_gatekeeper_qti)
