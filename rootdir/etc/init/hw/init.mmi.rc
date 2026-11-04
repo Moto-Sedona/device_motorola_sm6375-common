@@ -639,18 +639,6 @@ service vendor.charge_only_mode /vendor/bin/charge_only_mode
     group graphics system input
     disabled
 
-service vendor.thermal-com /vendor/bin/thermal-engine-v2 --minimode
-    class main
-    user root
-    group root system oem_2907
-    socket thermal-send-client stream 0666 system oem_2907
-    socket thermal-recv-client stream 0660 system oem_2907
-    socket thermal-recv-passive-client stream 0666 system oem_2907
-    socket thermal-send-rule stream 0660 system oem_2907
-    disabled
-
-# bugreport is triggered by holding down volume down, volume up and power
-
 service bugreport /system/bin/dumpstate -d -p -B -z \
         -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
     class main

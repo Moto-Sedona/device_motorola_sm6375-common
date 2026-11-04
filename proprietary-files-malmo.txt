@@ -587,6 +587,11 @@ vendor/lib64/libssc.so
 vendor/lib64/libssc_default_listener.so
 vendor/lib64/vendor.qti.hardware.sensorscalibrate-V1-ndk.so
 
+# Thermal
+vendor/bin/thermal-engine-v2
+vendor/etc/init/init_thermal-engine-v2.rc
+vendor/lib64/libthermalclient.so
+
 # Init
 vendor/etc/init/hw/init.qti.ufs.rc
 

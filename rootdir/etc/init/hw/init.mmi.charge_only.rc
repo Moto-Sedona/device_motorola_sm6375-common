@@ -20,7 +20,7 @@ on charger
     write /proc/sys/kernel/sched_boost 0
     write /sys/module/lpm_levels/parameters/sleep_disabled 0
 
-service vendor.thermal-com /vendor/bin/thermal-engine --minimode
+service vendor.thermal-com /vendor/bin/thermal-engine-v2 --minimode
     class charger
     user root
     group root system oem_2907
