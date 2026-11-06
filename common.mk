@@ -190,6 +190,10 @@ $(call soong_config_set_bool,stagefright,target_disable_thumbnail_block_model,tr
 PRODUCT_PACKAGES += \
     libion_qsecom_shim
 
+# Display
+PRODUCT_COPY_FILES += \
+    hardware/qcom-caf/sm6375-6.1/display/config/snapdragon_color_libs_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/snapdragon_color_libs_config.xml
+
 # Moto hardware
 PRODUCT_PACKAGES += \
     MotoActions \
