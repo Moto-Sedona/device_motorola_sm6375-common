@@ -1,0 +1,18 @@
+//
+// SPDX-FileCopyrightText: The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// Legacy ION allocation entry points for stock fingerprint and audio blobs.
+// Buffers come from DMA-BUF heaps; the 6.1 kernel has no /dev/ion. Device
+// extraction points the blobs at it with replace_needed('libion.so', ...).
+cc_library_shared {
+    name: "libion_qsecom_shim",
+    vendor: true,
+    srcs: ["ion_qsecom_shim.cpp"],
+    shared_libs: [
+        "libdmabufheap",
+        "liblog",
+    ],
+    cflags: ["-Wall", "-Wextra", "-Werror"],
+}

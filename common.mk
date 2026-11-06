@@ -186,6 +186,10 @@ PRODUCT_VENDOR_PROPERTIES += ro.vendor.sm6375.hw_video=$(SM6375_HW_VIDEO)
 
 $(call soong_config_set_bool,stagefright,target_disable_thumbnail_block_model,true)
 
+# Legacy ION allocations of stock blobs, served by DMA-BUF heaps
+PRODUCT_PACKAGES += \
+    libion_qsecom_shim
+
 # Moto hardware
 PRODUCT_PACKAGES += \
     MotoActions \
