@@ -35,7 +35,19 @@ TARGET_PREBUILT_KERNEL_HEADERS := $(KERNEL_PREBUILT_PATH)/kernel-uapi-headers.ta
 TARGET_BOARD_KERNEL_HEADERS := $(KERNEL_PREBUILT_PATH)/kernel-headers
 BOARD_PREBUILT_DTBIMAGE_DIR := $(KERNEL_PREBUILT_PATH)/dtb
 BOARD_PREBUILT_DTBOIMAGE := $(KERNEL_PREBUILT_PATH)/dtbo.img
-BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.memcg=1 androidboot.usbcontroller=4e00000.dwc3 firmware_class.path=/vendor/firmware_mnt/image
+# The bootloader rewrites the serial console arguments to null itself, but
+# fails to boot when they are absent; keep them as on stock.
+BOARD_KERNEL_CMDLINE := \
+    androidboot.console=ttyMSM0 \
+    androidboot.hardware=qcom \
+    androidboot.memcg=1 \
+    androidboot.usbcontroller=4e00000.dwc3 \
+    console=ttyMSM0,115200n8 \
+    ip6table_raw.raw_before_defrag=1 \
+    iptable_raw.raw_before_defrag=1 \
+    androidboot.selinux=enforcing \
+    log_buf_len=2M \
+    pstore.compress=none
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(strip $(shell cat $(KERNEL_PREBUILT_PATH)/modules.load.recovery))
 BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD)
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES := $(addprefix $(KERNEL_PREBUILT_PATH)/modules/,$(BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD))
