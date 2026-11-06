@@ -62,6 +62,16 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/public.libraries-qti.txt:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/public.libraries-qti.txt
 
 # Audio
+$(call soong_config_set,android_hardware_audio,run_64bit,true)
+$(call soong_config_set_bool, android_hardware_audio, skip_speaker_layout_channel_mask_field, true)
+
+# Legacy APR/Q6 primary HAL for the stock ADSP (sm8350 family HAL). Its
+# module keeps the name audio.primary.fogos.
+PRODUCT_PACKAGES += \
+    audio.primary.fogos
+PRODUCT_VENDOR_PROPERTIES += ro.hardware.audio.primary=fogos
+PRODUCT_SOONG_NAMESPACES += hardware/qcom-caf/fogos-legacy-audio
+
 PRODUCT_PACKAGES += \
     android.hardware.audio@7.1-impl \
     android.hardware.audio.effect@7.0-impl \
