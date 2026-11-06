@@ -195,3 +195,11 @@ on early-boot && property:persist.vendor.pcie.boot_option=*
 on property:sys.boot_completed=1
     # Enable PowerHAL hint processing
     setprop vendor.powerhal.init 1
+
+# Compressed swap. early-init unloads zram and nothing loads it again
+# (mount_all ignores swap entries, fstab.qcom has none, mmd zram is off),
+# so the phone ran with no swap. Reload it and enable the stock 75% zram.
+on property:sys.boot_completed=1
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules zram
+    write /sys/block/zram0/comp_algorithm lz4
+    swapon_all /vendor/etc/fstab.qcom.zram
