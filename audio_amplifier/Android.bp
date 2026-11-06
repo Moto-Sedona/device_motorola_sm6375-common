@@ -16,9 +16,11 @@ cc_library_shared {
     include_dirs: [
         "external/tinyalsa/include",
         "external/tinycompress/include",
-        "hardware/qcom-caf/sm8350/audio/hal",
-        "hardware/qcom-caf/sm8350/audio/hal/audio_extn",
-        "hardware/qcom-caf/sm8350/audio/hal/msm8974",
+        // The plugin reaches into struct audio_device, so build it against
+        // the primary HAL it is loaded into.
+        "hardware/qcom-caf/fogos-legacy-audio/hal",
+        "hardware/qcom-caf/fogos-legacy-audio/hal/audio_extn",
+        "hardware/qcom-caf/fogos-legacy-audio/hal/msm8974",
         "system/media/audio_route/include",
         "system/media/audio_utils/include",
     ],
