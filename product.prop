@@ -39,4 +39,3 @@ ril.subscription.types=RUIM
 ro.audio.monitorRotation=true
 ro.audio.monitorWindowRotation=true
 ro.telephony.default_network=26,26
-ro.telephony.esim_slot_id=1
