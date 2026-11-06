@@ -62,9 +62,6 @@ TARGET_BOARD_PLATFORM := blair
 OVERRIDE_QCOM_HARDWARE_VARIANT := sm6375-6.1
 QCOM_SOONG_NAMESPACE := hardware/qcom-caf/sm6375-6.1
 
-BOARD_ROOT_EXTRA_SYMLINKS := \
-    /vendor/fsg:/fsg
-
 # A/B
 AB_OTA_UPDATER := true
 
