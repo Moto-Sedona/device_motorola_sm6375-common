@@ -1,4 +1,4 @@
-# Copyright (c) 2012-2015, 2017-2020, The Linux Foundation. All rights reserved.
+# Copyright (c) 2012-2015, 2017-2021, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -24,16 +24,59 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
+#
+# Changes from Qualcomm Innovation Center are provided under the following license:
+# Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted (subject to the limitations in the
+# disclaimer below) provided that the following conditions are met:
+#
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#
+#     * Redistributions in binary form must reproduce the above
+#       copyright notice, this list of conditions and the following
+#       disclaimer in the documentation and/or other materials provided
+#       with the distribution.
+#
+#     * Neither the name of Qualcomm Innovation Center, Inc. nor the names of
+#       its contributors may be used to endorse or promote products derived
+#       from this software without specific prior written permission.
+#
+# NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
+# GRANTED BY THIS LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
+# HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+# GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+# IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+##### [MALMO SPECIFIC ueventd.rc] #####
+
+#Import rc file
+import /vendor/etc/ueventd.qcom.userdebug.rc
+
 
 # Firmware directory Path
 # Below macro will be read by uevent and path will
 # be added to search path for firmware loading
 firmware_directories /vendor/firmware_mnt/image/
 
+subsystem mem_buf_vm
+    devname uevent_devpath
+    dirname /dev/mem_buf_vm
+
 # the DIAG device node is not world writable/readable.
 /dev/diag                 0660   system     oem_2901
 /dev/mhi_*_pipe_4         0660   system     system
-/dev/virt-eavb            0660   system     audio
+
 /dev/genlock              0666   system     system
 /dev/wlan                 0660   wifi       wifi
 /dev/kgsl                 0666   system     system
@@ -54,18 +97,24 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/ccid_bridge          0660   system     system
 /dev/ipa                  0660   radio      radio
 /dev/wwan_ioctl           0660   radio      radio
+/dev/ipa_lnx_stats_ioctl  0640   radio      radio
 /dev/ipaNatTable          0660   radio      radio
 /dev/rmnet_ctrl           0660   usb        usb
 /dev/dpl_ctrl             0660   usb        usb
 /dev/ipa_odl_ctl          0660   radio      radio
 /dev/ipa_adpl             0660   system     oem_2905
 /dev/synx_device          0660   root       camera
+/dev/ubwcp                0660   root       camera
 /dev/hab                  0666   system     system
-/dev/hgsl                 0666   system     system
 /dev/iio:device*          0664   system     system
+/dev/qmc_dma              0660   radio      radio
+/dev/qmc_cma              0660   radio      radio
 
 #permissions for UFS RPMB BSG device node
 /dev/0:0:0:49476          0600   system     system
+
+#permissions for GPT listener on LUN4
+/dev/0:0:0:4              0600   system     root
 
 #permissions for CSVT
 /dev/smd11                0660   radio      radio
@@ -75,6 +124,8 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/smd3                 0660   bluetooth  bluetooth
 /dev/btpower              0660   bluetooth  system
 /dev/btfmslim             0660   bluetooth  system
+/dev/bt_cp_ctrl           0660   bluetooth  system
+/dev/btfmcodec_dev        0660   bluetooth  system
 
 #permissions for pta
 /dev/pta                  0660   system     system
@@ -137,12 +188,12 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/cvp*                 0660   system     camera
 /dev/media*               0660   system     camera
 /dev/v4l-subdev*          0660   system     camera
-/dev/hdmi_bdg_irq_handler 0660   system     camera
-/dev/dp_bdg_irq_handler   0660   system     camera
+/dev/cci_intf             0660   system     camera
 /dev/qseecom              0660   system     drmrpc
 /dev/qce                  0660   system     drmrpc
 /dev/smcinvoke            0660   system     drmrpc
 /dev/qsee_ipc_irq_spss    0660   system     drmrpc
+/dev/qti-smmu-proxy       0660   system     system
 /dev/seemplog             0660   system     system
 /dev/pft                  0660   system     drmrpc
 /dev/spcom                0660   system     system
@@ -166,9 +217,11 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/adsprpc-smd-secure   0644   system     system
 /dev/system_health_monitor 0644  radio      system
 /dev/mdss_rotator         0664   system     system
+/dev/spec_sync            0660   system     system
 
 #QDSS
 /dev/byte-cntr            0660   system    oem_2902
+/dev/byte-cntr1            0660   system    oem_2902
 /dev/mhi_qdss             0660   system    oem_2902
 /sys/class/qdss_bridge/mhi_qdss  mode      0660     system   oem_2902
 
@@ -178,11 +231,21 @@ firmware_directories /vendor/firmware_mnt/image/
 
 #qvr
 /dev/qvr_external_sensor_ioctl      0660  system  system
-/dev/bus/usb/*                      0660  root    usb
-/dev/hidraw*                        0660  root    usb
+/sys/kernel/qvr_external_sensor	fd  0660  system  system
+/dev/bus/usb/001/002      0660   system     system
+/dev/bus/usb/001/003      0660   system     system
+/dev/bus/usb/001/004      0660   system     system
+/dev/bus/usb/001/005      0660   system     system
+/dev/bus/usb/002/002      0660   system     system
+/dev/bus/usb/002/003      0660   system     system
+/dev/bus/usb/002/004      0660   system     system
+/dev/bus/usb/002/005      0660   system     system
+/dev/bus/usb/003/002      0660   system     system
+/dev/bus/usb/003/003      0660   system     system
+/dev/bus/usb/003/004      0660   system     system
+/dev/bus/usb/003/005      0660   system     system
+/dev/hidraw*              0660   system     system
 
-#rawdump
-/dev/block/platform/soc/*/by-name/rawdump       0660   root     system
 # Trustonic TEE device
 /dev/mobicore             0600   system     system
 /dev/mobicore-user        0666   system     system
@@ -192,9 +255,9 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/wcnss_ctrl           0660   system     system
 /sys/devices/soc/a000000.qcom,wcnss-wlan/net/wlan0/queues/rx-* rps_cpus           0660   system     system
 /sys/devices/soc/a000000.qcom,wcnss-wlan/net/p2p0/queues/rx-* rps_cpus            0660   system     system
-/sys/devices/platform/soc/*.qcom,icnss/net/wlan*/queues/rx-* rps_cpus             0660   system     system
+/sys/devices/platform/soc/c800000.qcom,icnss/net/wlan*/queues/rx-* rps_cpus             0660   system     system
+/sys/devices/platform/soc/c800000.qcom,icnss/net/p2p*/queues/rx-* rps_cpus             0660   system     system
 /sys/devices/platform/soc/1c00000.qcom,pcie/pci0000:00/0000:00:00.0/0000:01:00.0/net/wlan*/queues/rx-* rps_cpus      0660   system     system
-/sys/devices/platform/soc/17a10040.qcom,wcn6750/net/wlan*/queues/rx-* rps_cpus    0660   system     system
 /dev/spidev0.0            0660   system     audio
 /dev/i2c-7                0660   system     audio
 /dev/msm_camera/*         0660   system     camera
@@ -238,7 +301,9 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/msm_preproc_ctl      0660   system     audio
 /dev/msm_rtac             0660   system     audio
 /dev/msm_voicememo        0660   system     audio
-/dev/virt_sndcard_ctl     0660   system     audio
+/dev/aud_pasthru_adsp     0660   system     audio
+/dev/msm_audio_ion_cma    0660   system     audio
+/dev/msm_audio_ion        0660   system     audio
 /dev/ttyHSL1              0660   system     system
 /dev/ttyHS1               0660   system     system
 /dev/mdm                  0660   system     radio
@@ -249,8 +314,7 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/i2c-5                0660   media       media
 /dev/avtimer              0660   system     audio
 /dev/spidev2.0            0660   system     audio
-/dev/spidev22.0           0660   system     audio
-/dev/spidev10.0           0660   system     audio
+/dev/msm_adsp_sleepmon    0660   system     audio
 
 # DVB devices
 /dev/dvb/adapter0/demux*  0440   media       media
@@ -260,6 +324,25 @@ firmware_directories /vendor/firmware_mnt/image/
 # Broadcast devices
 /dev/tsc_mux0             0660   media       media
 /dev/tsc_ci0              0660   media       media
+
+# Goodix fingerprint device
+/dev/goodix_fp            0660   system     system
+
+# Anc fingerprint device
+/dev/jiiov_fp             0660   system     system
+
+# Change permission for FPC fingerprint
+/sys/class/fingerprint/fpc1020 nav        0440     system    system
+/sys/class/fingerprint/fpc1020 irq        0440     system    system
+/sys/class/fingerprint/fpc1020 irq_cnt    0440     system    system
+/sys/class/fingerprint/fpc1020 dev_enable 0220     system    system
+/sys/class/fingerprint/fpc1020 vendor     0444     system    system
+/sys/class/fingerprint/fpc1020 hw_reset   0220     system    system
+
+/sys/devices/platform/soc/soc\:fpc_fpc1020 irq          0440     system    system
+/sys/devices/platform/soc/soc\:fpc_fpc1020 irq_cnt      0440     system    system
+/sys/devices/platform/soc/soc\:fpc_fpc1020 dev_enable   0220     system    system
+/sys/devices/platform/soc/soc\:fpc_fpc1020 hw_reset     0220     system    system
 
 # sensors
 /dev/sensors              0660   system     system
@@ -304,6 +387,8 @@ firmware_directories /vendor/firmware_mnt/image/
 /sys/devices/virtual/input/input*                   enable_ps_sensor 0660  system   input
 /sys/devices/virtual/input/input*                   set_delay_ms     0660  system   input
 /sys/devices/virtual/input/input*                   do_flush         0660  system   input
+/sys/devices/virtual/input/input*                   timing_budget    0660  system   input
+/dev/laser                                                           0660  system   camera
 
 # vm_bms
 /dev/vm_bms               0660   system     system
@@ -315,10 +400,22 @@ firmware_directories /vendor/firmware_mnt/image/
 /sys/devices/soc/600000.qcom,pcie/pci0000:00/0000:00:00.0/0000:01:00.0/net/wlan0/queues/rx-* rps_cpus 0660 system system
 /sys/devices/soc/600000.qcom,pcie/pci0000:00/0000:00:00.0/0000:01:00.0/net/p2p0/queues/rx-* rps_cpus 0660 system system
 
+# wigig
+/sys/bus/pci/drivers/wil6210* 0000:01:00.0/wil6210/fst_link_loss 0660 wifi wifi
+/sys/bus/pci/drivers/wil6210* 0000:01:00.0/wil6210/thermal_throttling 0660 system system
+/sys/bus/pci/drivers/wil6210* 0000:01:00.0/wil6210/snr_thresh 0660 wifi wifi
+/sys/bus/pci/drivers/wil6210* 0000:01:00.0/net/wigig0/queues/rx-0/rps_cpus 0660 system system
+/sys/bus/pci/drivers/wil6210* 0000:01:00.0/net/wigig0/gro_flush_timeout 0660 system system
+/sys/devices/virtual/net/bond0 queues/rx-0/rps_cpus 0660 system system
+
 #nfc permissions
 /dev/nfc-nci              0660    nfc         nfc
 /dev/nq-nci               0660    nfc         nfc
 /dev/assd                 0660    nfc         nfc
+/dev/st21nfc              0660    nfc         nfc
+
+# eSE permissions
+/dev/st54spi_gpio         0660   system     system
 
 # UIO devices
 /dev/uio0                 0660   system     system
@@ -327,6 +424,9 @@ firmware_directories /vendor/firmware_mnt/image/
 
 # SSR devices
 /dev/subsys_*         0640   system     system
+
+# remoteproc devices
+/dev/remoteproc*      0640   system     system
 
 # Ultrasound device
 /dev/usf1                 0660   system     system
@@ -344,34 +444,13 @@ firmware_directories /vendor/firmware_mnt/image/
 /dev/hbtp_vm              0660   system     system
 
 # Add device block for FRP
-/dev/block/platform/soc/7824900.sdhci/by-name/config    0600   system     system
-/dev/block/platform/soc/7464900.sdhci/by-name/frp       0600   system     system
-/dev/block/platform/soc/624000.ufshc/by-name/frp        0600   system     system
-/dev/block/platform/soc/1da4000.ufshc/by-name/frp       0600   system     system
-/dev/block/platform/soc/c0c4000.sdhci/by-name/frp       0600   system     system
-/dev/block/platform/soc/1d84000.ufshc/by-name/frp       0600   system     system
-/dev/block/platform/soc/7c4000.sdhci/by-name/frp        0600   system     system
-/dev/block/platform/soc/4744000.sdhci/by-name/frp       0600   system     system
 /dev/block/platform/soc/4804000.ufshc/by-name/frp       0600   system     system
 
-# This is temporary while using SD card for initial bring-up
-/dev/block/platform/soc/8804000.sdhci/by-name/frp       0600   system     system
-
 # Add device block for MISC
-/dev/block/platform/soc/7464900.sdhci/by-name/misc       0660   root     system
-/dev/block/platform/soc/624000.ufshc/by-name/misc        0660   root     system
-/dev/block/platform/soc/1da4000.ufshc/by-name/misc       0660   root     system
-/dev/block/platform/soc/c0c4000.sdhci/by-name/misc       0660   root     system
-/dev/block/platform/soc/1d84000.ufshc/by-name/misc       0660   root     system
-/dev/block/platform/soc/7c4000.sdhci/by-name/misc        0660   root     system
-/dev/block/platform/soc/4744000.sdhci/by-name/misc       0660   root     system
 /dev/block/platform/soc/4804000.ufshc/by-name/misc       0660   root     system
 
 # Kmsg device
 /dev/kmsg                                               0620   root       system
-
-# I2C
-/dev/i2c-*               0660   system     system
 
 # change permission for some capsensor nodes
 /sys/class/sensors/Moto\ CapSense\ Ch*   enable       0660    root    input
@@ -381,19 +460,21 @@ firmware_directories /vendor/firmware_mnt/image/
 /sys/class/leds/red      delay_on     0640    system    system
 /sys/class/leds/red      delay_off    0640    system    system
 /sys/class/leds/red      breath       0640    system    system
+/sys/class/leds/red      repeat       0640    system    system
+/sys/class/leds/red      hw_pattern   0640    system    system
 /sys/class/leds/red      trigger      0640    system    system
 /sys/class/leds/green    delay_on     0640    system    system
 /sys/class/leds/green    delay_off    0640    system    system
 /sys/class/leds/green    breath       0640    system    system
 /sys/class/leds/green    trigger      0640    system    system
+/sys/class/leds/green    repeat       0640    system    system
+/sys/class/leds/green    hw_pattern   0640    system    system
 /sys/class/leds/blue     delay_on     0640    system    system
 /sys/class/leds/blue     delay_off    0640    system    system
 /sys/class/leds/blue     breath       0640    system    system
 /sys/class/leds/blue     trigger      0640    system    system
-/sys/class/leds/charging delay_on     0640    system    system
-/sys/class/leds/charging delay_off    0640    system    system
-/sys/class/leds/charging breath       0640    system    system
-/sys/class/leds/charging trigger      0640    system    system
+/sys/class/leds/blue     repeat       0640    system    system
+/sys/class/leds/blue     hw_pattern   0640    system    system
 
 # NPU device
 /dev/msm_npu             0644   system     system
@@ -402,6 +483,26 @@ firmware_directories /vendor/firmware_mnt/image/
 /sys/class/dual_role_usb/*	data_role	0660	system	system
 /sys/class/dual_role_usb/*	power_role	0660	system	system
 /sys/class/dual_role_usb/*	mode		0660	system	system
+
+/sys/class/typec/port0		data_role	0660	system	usb
+/sys/class/typec/port0		power_role	0660	system	usb
+/sys/class/typec/port0		port_type	0660	system	usb
+/sys/class/typec/port0-partner	accessory_mode	0440	system	usb
+
+# USB Dynamic Disable
+/sys/bus/platform/devices/4e00000.ssusb	dynamic_disable	0220	root	usb
+
+# USB autosuspend/wakeup settings
+/sys/bus/usb/devices/*      power/autosuspend          0660  system  usb
+/sys/bus/usb/devices/*      power/autosuspend_delay_ms 0660  system  usb
+/sys/bus/usb/devices/*      power/control              0660  system  usb
+/sys/bus/usb/devices/*      power/wakeup               0660  system  usb
+
+#USB root hub authorize setting
+/sys/bus/usb/devices/usb*   authorized                 0660  system  usb
+
+#USB mode setting
+/sys/bus/platform/devices/4e00000.ssusb    mode        0660  system  usb
 
 #Memory Offline
 /sys/devices/system/memory/memory* state    0660 system system
@@ -441,9 +542,7 @@ firmware_directories /vendor/firmware_mnt/image/
 /sys/class/graphics/fb0     mode                     0664    system  graphics
 /sys/class/graphics/fb0     msm_cmd_autorefresh_en   0664    system  graphics
 
-/sys/devices/platform/soc/ae00000.qcom,mdss_mdp/drm/card*/sde-crtc-* lineptr_value 0664 system graphics
-
-/sys/devices/platform/soc/ae00000.qcom,mdss_mdp power/control 0664 system graphics
+/sys/devices/platform/soc/5e00000.qcom,mdss_mdp power/control 0664 system graphics
 
 #asm330 sensor
 #common sensors files
@@ -506,22 +605,14 @@ firmware_directories /vendor/firmware_mnt/image/
 /sys/devices/platform/soc/*.i2c/i2c-*/*-*/iio:device*   in_temp_scale                   0664    system  system
 /sys/devices/platform/soc/*.i2c/i2c-*/*-*/iio:device*   in_temp_scale_available         0664    system  system
 
-# fps device node
-/dev/focaltech_fp                                       0660   system     system
-/dev/fpsensor                                           0660   system     system
-/dev/goodix_fp                                          0664   system     system
-/dev/esfp0                                              0664   system     system
-/dev/silead_fp                                          0664   system     system
+# devcoredump data attributes
+/sys/class/devcoredump/devcd*                           data                            0600    system  system
 
-# Change permission for FPC fingerprint
-/sys/class/fingerprint/fpc1020 nav        0440     system    system
-/sys/class/fingerprint/fpc1020 irq        0440     system    system
-/sys/class/fingerprint/fpc1020 irq_cnt    0440     system    system
-/sys/class/fingerprint/fpc1020 dev_enable 0220     system    system
-/sys/class/fingerprint/fpc1020 vendor     0444     system    system
+#Virtualization Attributes
+/dev/gunyah                 0666   root     root
 
-# socinfo
-/sys/devices/soc0                                       serial_number                   0000    root    root
+# Q2SPI UWB device
+/dev/q2spiuwb    0660    uwb    uwb
 
 # NFC ST Driver permissions
 /dev/st21nfc              0660   nfc        nfc
