@@ -161,7 +161,8 @@ PRODUCT_COPY_FILES += \
 # IPACM
 PRODUCT_PACKAGES += \
     ipacm \
-    IPACM_cfg.xml
+    IPACM_cfg.xml \
+    IPACM_Filter_cfg.xml
 
 # IPC router config
 PRODUCT_COPY_FILES += \
