@@ -79,23 +79,13 @@ AB_OTA_PARTITIONS += \
     vendor_boot \
     vendor_dlkm
 
-# Audio
-AUDIO_FEATURE_ENABLED_AHAL_EXT := false
-AUDIO_FEATURE_ENABLED_DLKM := true
-AUDIO_FEATURE_ENABLED_DS2_DOLBY_DAP := false
-AUDIO_FEATURE_ENABLED_DTS_EAGLE := false
-AUDIO_FEATURE_ENABLED_DYNAMIC_LOG := false
-AUDIO_FEATURE_ENABLED_EXTENDED_COMPRESS_FORMAT := true
+# Audio: legacy APR/Q6 stack with the stock ADSP
 AUDIO_FEATURE_ENABLED_GEF_SUPPORT := true
-AUDIO_FEATURE_ENABLED_GKI := true
-AUDIO_FEATURE_ENABLED_HW_ACCELERATED_EFFECTS := false
 AUDIO_FEATURE_ENABLED_INSTANCE_ID := true
-AUDIO_FEATURE_ENABLED_PROXY_DEVICE := true
-AUDIO_FEATURE_ENABLED_SSR := false
-AUDIO_FEATURE_ENABLED_SVA_MULTI_STAGE := true
-BOARD_SUPPORTS_OPENSOURCE_STHAL := true
-BOARD_SUPPORTS_SOUND_TRIGGER := true
-BOARD_USES_ALSA_AUDIO := true
+# The legacy HAL uses the GKI snd_codec layout (techpack compressed formats)
+# and HAL 7.1.
+AUDIO_FEATURE_ENABLED_GKI := true
+AUDIO_FEATURE_ENABLED_HAL_V7 := true
 
 # Display
 TARGET_USES_COLOR_METADATA := true
@@ -212,7 +202,5 @@ include vendor/motorola/sm6375-common/BoardConfigVendor.mk
 
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/manifest_radio.xml
 $(call soong_config_set,rmnetctl,old_rmnet_data,true)
-
-AUDIO_FEATURE_ENABLED_HAL_V7 := true
 
 TARGET_SYSTEM_PROP += $(COMMON_PATH)/system.prop
