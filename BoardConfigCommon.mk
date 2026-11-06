@@ -105,6 +105,14 @@ DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
 DEVICE_MATRIX_FILE := hardware/qcom-caf/common/compatibility_matrix.xml
 DEVICE_MANIFEST_FILE += $(COMMON_PATH)/manifest.xml
 
+# The Qualcomm video Codec2 store needs msm_video, which is not validated on
+# 6.1 yet. Declared without it, the store never registers and every media
+# client waits on IComponentStore/default.
+SM6375_HW_VIDEO ?= false
+ifeq ($(SM6375_HW_VIDEO),true)
+DEVICE_MANIFEST_FILE += $(COMMON_PATH)/manifest_c2_video.xml
+endif
+
 # Metadata
 BOARD_USES_METADATA_PARTITION := true
 
