@@ -375,6 +375,11 @@ vendor/etc/hal_uuid_map_dn.xml
 vendor/etc/hal_uuid_map_n.xml
 vendor/lib64/libqcbor.so
 
+# Data - SHS
+vendor/bin/shsusrd
+vendor/etc/init/shsusrd.rc
+vendor/lib64/libshsc.so
+
 # Native Public Libraries
 vendor/etc/public.libraries.txt
 
