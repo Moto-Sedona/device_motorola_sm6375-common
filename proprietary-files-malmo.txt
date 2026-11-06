@@ -110,6 +110,8 @@ vendor/lib64/libvideotxr.so
 vendor/lib64/qti.video.utils.videobufferlayout.so
 
 # Media Configs
+vendor/bin/init.qti.media.sh
+vendor/etc/init/init.qti.media.rc
 vendor/etc/media_blair/video_system_specs.json
 vendor/etc/media_codecs_blair.xml
 vendor/etc/media_codecs_performance_blair.xml
@@ -607,3 +609,41 @@ vendor/bin/init.kernel.post_boot.sh
 vendor/bin/init.qti.kernel.sh
 vendor/bin/init.qti.write.sh
 vendor/bin/system_dlkm_modprobe.sh
+
+# Init and boot scripts
+vendor/bin/init.class_main.sh
+vendor/bin/init.crda.sh
+vendor/bin/init.gbmods.sh
+vendor/bin/init.mmi.block_perm.sh
+vendor/bin/init.mmi.boot.sh
+vendor/bin/init.mmi.cap.sh
+vendor/bin/init.mmi.display.sh
+vendor/bin/init.mmi.mdlog-getlogs.sh
+vendor/bin/init.mmi.modem-rfs.sh
+vendor/bin/init.mmi.modules.sh
+vendor/bin/init.mmi.shutdown.sh
+vendor/bin/init.mmi.touch.sh
+vendor/bin/init.mmi.usb.sh
+vendor/bin/init.mmi.wlan-getlogs.sh
+vendor/bin/init.oem.hw.sh
+vendor/bin/init.qcom.class_core.sh
+vendor/bin/init.qcom.coex.sh
+vendor/bin/init.qcom.early_boot.sh
+vendor/bin/init.qcom.efs.sync.sh
+vendor/bin/init.qcom.post_boot.sh
+vendor/bin/init.qcom.sdio.sh
+vendor/bin/init.qcom.sh
+vendor/bin/init.qti.kernel.debug-blair.sh
+vendor/bin/init.qti.kernel.debug-holi.sh
+vendor/bin/init.qti.kernel.debug.sh
+vendor/bin/init.qti.kernel.early_debug-blair.sh
+vendor/bin/init.qti.kernel.early_debug-holi.sh
+vendor/bin/init.qti.kernel.early_debug.sh
+vendor/bin/vendor_modprobe.sh
+vendor/etc/init/hw/init.mmi.charge_only.rc
+vendor/etc/init/hw/init.mmi.debug.rc
+vendor/etc/init/hw/init.mmi.diag.rc
+vendor/etc/init/hw/init.mmi.diag_mdlog.rc
+vendor/etc/init/hw/init.mmi.wlan.rc
+vendor/etc/init/hw/init.qcom.factory.rc
+vendor/etc/init/hw/init.qti.kernel.rc
