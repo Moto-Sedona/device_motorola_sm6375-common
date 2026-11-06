@@ -229,3 +229,6 @@ vendor.audio.use.sw.ape.decoder=false
 vendor.audio_hal.in_period_size=144
 vendor.audio_hal.period_multiplier=3
 vendor.audio_hal.period_size=192
+
+# USB
+vendor.usb.diag.func.name=ffs
