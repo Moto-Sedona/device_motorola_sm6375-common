@@ -614,5 +614,7 @@ subsystem mem_buf_vm
 # Q2SPI UWB device
 /dev/q2spiuwb    0660    uwb    uwb
 
-# NFC ST Driver permissions
-/dev/st21nfc              0660   nfc        nfc
+# Fingerprint sensors of the other sm6375 boards (bangkk: Egis)
+/dev/esfp0                0664   system     system
+/dev/focaltech_fp         0660   system     system
+/dev/fpsensor             0660   system     system
