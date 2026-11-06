@@ -197,6 +197,30 @@ on property:sys.boot_completed=1
     # Enable PowerHAL hint processing
     setprop vendor.powerhal.init 1
 
+# Motorola modules every sm6375 board loads on Linux 6.1, which keeps the
+# vendor modules flat in /vendor/lib/modules.
+on early-init
+    # zram is reloaded with the stock swap configuration after boot.
+    exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -r -d /vendor/lib/modules zram
+    exec_background u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules mmi_sys_temp
+
+on early-init && property:ro.boot.secure_hardware=0
+    exec_background u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules con_dfpar
+
+on post-fs && property:ro.boot.secure_hardware=0
+    write /proc/con_dfpar/con_dfpar_enable 1
+
+on boot
+    write /proc/sys/vm/dirty_background_bytes 26214400
+    write /proc/sys/vm/dirty_bytes 104857600
+
+on property:sys.boot_completed=1
+    exec_background u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules moto_mmap_fault wakeup_sources
+
+    # Adaptive charging limits for the health HAL
+    chown system system /sys/module/qpnp_adaptive_charge/parameters/upper_limit
+    chown system system /sys/module/qpnp_adaptive_charge/parameters/lower_limit
+
 # Compressed swap. early-init unloads zram and nothing loads it again
 # (mount_all ignores swap entries, fstab.qcom has none, mmd zram is off),
 # so the phone ran with no swap. Reload it and enable the stock 75% zram.
