@@ -1,0 +1,2 @@
+allow vendor_ims_service vendor_netmgrd_socket:dir search;
+unix_socket_connect(vendor_ims_service, vendor_netmgrd, vendor_netmgrd)

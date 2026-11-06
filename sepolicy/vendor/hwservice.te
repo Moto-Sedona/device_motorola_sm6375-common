@@ -1,4 +1,2 @@
-type hal_cameradesktop_hwservice, hwservice_manager_type;
-type hal_ifaa_hwservice, hwservice_manager_type;
-type nxpese_hwservice, hwservice_manager_type;
-type nxpnfc_hwservice, hwservice_manager_type;
+type vendor_hal_dataconnection_hwservice, hwservice_manager_type, protected_hwservice;
+type vendor_hal_iwlan_hwservice, hwservice_manager_type, protected_hwservice;

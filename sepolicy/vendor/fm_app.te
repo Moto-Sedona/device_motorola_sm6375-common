@@ -1,2 +1,0 @@
-#needed to prevent fmapp hanging
-allow vendor_fm_app mediametrics_service:service_manager find;

@@ -1,9 +1,24 @@
+# The stock HIDL gatekeeper is not labeled by the sm8650 Qualcomm policy.
+/(vendor|system/vendor)/bin/hw/android\.hardware\.gatekeeper@1\.0-service-qti    u:object_r:vendor_hal_gatekeeper_qti_exec:s0
+
 # Fingerprint
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.3-service\.bangkk          u:object_r:hal_fingerprint_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.3-service\.miami           u:object_r:hal_fingerprint_default_exec:s0
 
-/(vendor|system/vendor)/bin/hw/android\.hardware\.gatekeeper@1\.0-service-qti    u:object_r:vendor_hal_gatekeeper_qti_exec:s0
+# Stock fogos fingerprint HALs (started by init.oem.fingerprint2.sh).
 /vendor/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-goodixservice    u:object_r:hal_fingerprint_default_exec:s0
 /vendor/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service-fpc    u:object_r:hal_fingerprint_default_exec:s0
+
+# Perfmgr
 /(vendor|system/vendor)/bin/hw/android\.hardware\.power-service\.pixel-libperfmgr    u:object_r:hal_power_default_exec:s0
 /data/vendor/powerhal(/.*)?                                        u:object_r:powerhal_vendor_data_file:s0
+
+# Network manager
+/(vendor|system/vendor)/bin/netmgrd    u:object_r:vendor_netmgrd_exec:s0
+/dev/socket/netmgr(/.*)?    u:object_r:vendor_netmgrd_socket:s0
+/data/vendor/netmgr(/.*)?    u:object_r:vendor_netmgr_data_file:s0
+/data/vendor/netmgr/recovery(/.*)?    u:object_r:vendor_netmgr_recovery_data_file:s0
+
+# Legacy audio calibration
+/dev/msm_audio_cal    u:object_r:audio_device:s0
+/dev/msm_rtac    u:object_r:audio_device:s0
