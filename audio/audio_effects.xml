@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Effects for the legacy HAL (FOGOS_ADSP_FW=fogos): the LineageOS fogos
+     software effects only. The vendor Qualcomm/Motorola effect libraries are
+     AudioReach builds, so no hardware proxies or per-stream helpers. -->
 <audio_effects_conf version="2.0" xmlns="http://schemas.android.com/audio/audio_effects_conf/v2_0">
     <libraries>
         <library name="bundle" path="libbundlewrapper.so"/>
