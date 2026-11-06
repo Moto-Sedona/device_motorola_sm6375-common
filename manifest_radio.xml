@@ -1,3 +1,7 @@
+<!--
+    RIL, data and IMS HALs served by the stock qcrilNrd, cnd, dpmQmiMgr,
+    imsdaemon and ims_rtp_daemon (copied from the stock vendor manifest).
+-->
 <manifest version="2.0" type="device">
     <hal format="hidl">
         <name>android.hardware.radio</name>
