@@ -188,6 +188,7 @@ service vendor.cnss_diag /system/vendor/bin/cnss_diag -q -f -t HELIUM
    user system
    group system wifi inet sdcard_rw media_rw diag
    oneshot
+
 on early-boot && property:persist.vendor.pcie.boot_option=*
     write /sys/bus/platform/devices/1c00000.qcom,pcie/debug/boot_option ${persist.vendor.pcie.boot_option}
     write /sys/bus/platform/devices/1c08000.qcom,pcie/debug/boot_option ${persist.vendor.pcie.boot_option}
@@ -203,3 +204,9 @@ on property:sys.boot_completed=1
     exec u:r:vendor_modprobe:s0 -- /vendor/bin/modprobe -a -d /vendor/lib/modules zram
     write /sys/block/zram0/comp_algorithm lz4
     swapon_all /vendor/etc/fstab.qcom.zram
+
+# Halve the WALT window (16ms -> 8ms at HZ=250) so frequency follows load
+# within one 120Hz frame. Qualcomm's perf HAL does this on stock; libperfmgr
+# does not. Runs after init.kernel.post_boot-blair.sh has applied its tunables.
+on property:vendor.post_boot.parsed=1
+    write /proc/sys/walt/sched_ravg_window_nr_ticks 2
