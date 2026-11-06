@@ -60,14 +60,14 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import /vendor/etc/init/hw/init.qti.ufs.rc
-
 import /vendor/etc/init/hw/init.qcom.usb.rc
-
+import /vendor/etc/init/hw/init.qcom.test.rc
 import /vendor/etc/init/hw/init.target.rc
-
 import /vendor/etc/init/hw/init.qcom.factory.rc
 
 on early-init
+    mount tracefs tracefs /sys/kernel/tracing
+    chmod 0755 /sys/kernel/tracing
 
   # create symlink for vendor mount points
     symlink /vendor/firmware_mnt /firmware
@@ -101,6 +101,8 @@ on init
     write /sys/fs/cgroup/memory/bg/memory.move_charge_at_immigrate 1
     chown root system /sys/fs/cgroup/memory/bg/tasks
     chmod 0660 /sys/fs/cgroup/memory/bg/tasks
+
+on post-fs
 
 on early-boot
     # set RLIMIT_MEMLOCK to 64KB
@@ -197,8 +199,13 @@ on boot
     # bond0 used by FST Manager
     chown wifi wifi /sys/class/net/bond0/bonding/queue_id
 
+    # Allow access to emmc rawdump block partition and dload sysfs node
+    chown root system /dev/block/bootdevice/by-name/rawdump
+    chmod 0660 /dev/block/bootdevice/by-name/rawdump
     chown root system /sys/kernel/dload/emmc_dload
     chmod 0660 /sys/kernel/dload/emmc_dload
+    chown root system /dev/block/bootdevice/by-name/ramdump
+    chmod 0660 /dev/block/bootdevice/by-name/ramdump
     chown root system /sys/kernel/dload/dload_mode
     chmod 0660 /sys/kernel/dload/dload_mode
 
@@ -250,10 +257,11 @@ on boot
     write /sys/block/sda/queue/discard_max_bytes 134217728
 
 # msm specific files that need to be created on /data
-
 on post-fs-data
     mkdir /data/vendor/misc 01771 system system
 
+    # Create directory used for dump collection
+    mkdir /data/vendor/ssrdump 0770 root system
 
     # Create directory used by display clients
     mkdir /data/vendor/display 0770 system graphics
@@ -281,7 +289,9 @@ on post-fs-data
     mkdir /data/vendor/tombstones 0771 system system
     mkdir /data/vendor/tombstones/rfs 0771 system system
 
+    mkdir /data/vendor/ramdump 0771 root system
     mkdir /data/vendor/bluetooth 0770 bluetooth bluetooth
+    mkdir /data/vendor/ramdump/bluetooth 0770 bluetooth bluetooth
 
     # Create the directories used by the Wireless subsystem
     mkdir /data/vendor/wifi 0770 wifi wifi
@@ -303,6 +313,7 @@ on post-fs-data
     # Create directory used by audio subsystem
     mkdir /data/vendor/audio 0770 audio audio
     mkdir /data/vendor/audio_dsp 0770 media media
+    mkdir /data/vendor/audio/audio_collector 0770 audio audio
 
     # Create directory for audio delta files
     mkdir /data/vendor/audio/acdbdata 0770 media audio
@@ -394,6 +405,13 @@ on post-fs-data
     chown radio radio /data/vendor/radio/db_check_done
     chmod 0660 /data/vendor/radio/db_check_done
 
+    # qti-logkit data
+    mkdir /data/vendor/qti-logkit/ 0771 system system
+    mkdir /data/vendor/qti-logkit/shared-privileged/ 2770 system system
+    mkdir /data/vendor/qti-logkit/shared-public/ 2770 system diag
+    mkdir /data/vendor/qti-logkit/socket-privileged/ 2770 system system
+    mkdir /data/vendor/qti-logkit/socket-public/ 2750 system diag
+    mkdir /data/vendor/qti-logkit/logdata/ 2750 system shell
 
     #Create SWAP related dirs
     mkdir /data/vendor/swap 0770 root system
@@ -448,6 +466,13 @@ service vendor.ssr_setup /system/vendor/bin/ssr_setup
     oneshot
     disabled
 
+service vendor.ss_ramdump /system/vendor/bin/subsystem_ramdump
+    class main
+    user system
+    group log sdcard_rw sdcard_r diag system
+    ioprio rt 4
+    disabled
+
 on property:ro.vendor.iocgrp.config=1
     mkdir /dev/blkio
     mount cgroup none /dev/blkio blkio
@@ -460,6 +485,9 @@ on property:ro.vendor.iocgrp.config=1
     write /dev/blkio/blkio.weight 1000
     write /dev/blkio/bg/blkio.weight 100
 
+on property:persist.sys.ssr.enable_debug=*
+    write /sys/module/subsystem_restart/parameters/enable_debug ${persist.sys.ssr.enable_debug}
+
 on property:persist.sys.mba_boot_timeout=*
     write /sys/module/pil_msa/parameters/pbl_mba_boot_timeout_ms ${persist.sys.mba_boot_timeout}
 
@@ -471,6 +499,22 @@ on property:persist.sys.pil_proxy_timeout=*
 
 on property:persist.vendor.ssr.restart_level=*
     start vendor.ssr_setup
+
+on property:persist.vendor.ssr.enable_ramdumps=1
+    write /sys/module/subsystem_restart/parameters/enable_ramdumps 1
+    write /sys/module/qcom_ramdump/parameters/enable_dump_collection 1
+    mkdir /data/vendor/ramdump_ssr 770 system system
+    start vendor.ss_ramdump
+
+on property:persist.vendor.ssr.enable_ramdumps=0
+    write /sys/module/subsystem_restart/parameters/enable_ramdumps 0
+    write /sys/module/qcom_ramdump/parameters/enable_dump_collection 0
+
+on property:persist.vendor.sys.rawdump_copy=1
+    write /sys/kernel/dload/emmc_dload 1
+
+on property:persist.vendor.sys.rawdump_copy=0
+    write /sys/kernel/dload/emmc_dload 0
 
 on property:sys.boot_completed=1
     write /dev/kmsg "Boot completed "
@@ -492,6 +536,9 @@ on property:sys.boot_completed=1
     write /sys/devices/virtual/cvp/cvp/boot 1
 
 # corefile limit
+on property:persist.debug.trace=1
+    mkdir /data/core 0777 root root
+    write /proc/sys/kernel/core_pattern "/data/core/%E.%p.%e"
 
 on property:vendor.media.target.version=*
     setprop vendor.sys.media.target.version ${vendor.media.target.version}
@@ -499,6 +546,7 @@ on property:vendor.media.target.version=*
 on property:vendor.media.target_variant=*
     setprop ro.media.xml_variant.codecs ${vendor.media.target_variant}
     setprop ro.media.xml_variant.codecs_performance ${vendor.media.target_variant}
+    setprop ro.media.xml_variant.profiles ${vendor.media.target_variant}
 
 service qcom-c_core-sh  /vendor/bin/init.qcom.class_core.sh
     class core
@@ -542,7 +590,6 @@ service vendor.wigig_supplicant /vendor/bin/hw/wpa_supplicant \
     oneshot
 
 # Data Migration
-
 service vendor.move_wifi_data /system/bin/move_wifi_data.sh
     class main
     user  wifi
@@ -687,6 +734,13 @@ service qcom-post-boot /vendor/bin/init.qcom.post_boot.sh
     disabled
     oneshot
 
+service qti-testscripts /system/bin/sh /product/etc/init.qcom.testscripts.sh
+    class late_start
+    user root
+    disabled
+    oneshot
+    seclabel u:r:qti-testscripts:s0
+
 service wifi-sdio-on /vendor/bin/init.qcom.sdio.sh
     class late_start
     group wifi inet
@@ -698,6 +752,10 @@ service wifi-crda /vendor/bin/init.crda.sh
    user root
    disabled
    oneshot
+
+on property:sys.boot_completed=1
+    start qcom-post-boot
+    start qti-testscripts
 
 on property:ro.vendor.ril.mbn_copy_completed=1
     write /data/vendor/radio/copy_complete 1
@@ -747,18 +805,42 @@ service profiler_daemon /system/bin/profiler_daemon
 #    capabilities SYS_BOOT
 #    seclabel u:r:charger:s0
 
+service vendor.ssr_diag /system/vendor/bin/ssr_diag
+    class late_start
+    user system
+    group system
+    disabled
+
+#service diag_mdlog_start /system/vendor/bin/diag_mdlog
+#    class late_start
+#    user shell
+#    group system oem_2901 sdcard_rw sdcard_r media_rw
+#    disabled
+#    oneshot
+
+#service diag_mdlog_stop /system/vendor/bin/diag_mdlog -k
+#    class late_start
+#    user shell
+#    group system oem_2901 sdcard_rw sdcard_r media_rw
+#    disabled
+#    oneshot
+
 service qlogd /system/xbin/qlogd
     socket qlogd stream 0662 system system
     class main
     disabled
-
 on property:persist.sys.qlogd=1
     start qlogd
-
 on property:persist.sys.qlogd=0
     stop qlogd
 
 service vm_bms /vendor/bin/vm_bms
+    user root
+    group root
+    disabled
+
+service vendor.msm_irqbalance /vendor/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
+    class core
     user root
     group root
     disabled
@@ -776,7 +858,6 @@ service vendor.msm_irqbl_sdm630 /vendor/bin/msm_irqbalance -f /system/vendor/etc
     disabled
 
 # service for USERDEBUG
-
 service vendor.LKCore-dbg /vendor/bin/LKCore
     class late_start
     oneshot
@@ -785,7 +866,6 @@ service vendor.LKCore-dbg /vendor/bin/LKCore
     group root system log diag net_raw
 
 # service for USER
-
 service vendor.LKCore-rel /vendor/bin/LKCore
     class late_start
     oneshot
@@ -808,7 +888,6 @@ service esepmdaemon /system/vendor/bin/esepmdaemon
 #    start qcom-post-boot
 
 #add poweroffhandler
-
 service poweroffhandler /system/vendor/bin/poweroffhandler
     class core
     user media
@@ -823,7 +902,6 @@ service time_daemon /vendor/bin/time_daemon
     capabilities SYS_TIME
 
 # Set vendor-ril lib path based on Meta version
-
 on property:vendor.rild.libpath=*
     setprop rild.libpath ${vendor.rild.libpath}
 
@@ -853,10 +931,21 @@ service chre /vendor/bin/chre
 on property:vendor.chre.enabled=0
    stop chre
 
+service bugreport /system/bin/dumpstate -d -p -B -z -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
+    class main
+    disabled
+    oneshot
+    keycodes 114 115 116
+
+#Set GPU Opengles version
 on property:vendor.opengles.version=*
     setprop ro.opengles.version ${vendor.opengles.version}
 
 #Set gpu available frequencies property
-
 on property:vendor.gpu.available_frequencies=*
     setprop ro.vendor.gpu.available_frequencies ${vendor.gpu.available_frequencies}
+
+# No 6.1 msm_video driver yet: the Qualcomm video Codec2 store is not declared
+# (SM6375_HW_VIDEO), so keep its blob service from crash-looping.
+on boot && property:ro.vendor.sm6375.hw_video=false
+    stop vendor-qti-media-c2-hal-1-0
