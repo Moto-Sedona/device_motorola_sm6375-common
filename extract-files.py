@@ -48,6 +48,29 @@ lib_fixups: lib_fixups_user_type = {
 
 
 blob_fixups: blob_fixups_user_type = {
+    # Keep the generated vendor incremental version instead of rewriting it.
+    'vendor/bin/init.oem.hw.sh': blob_fixup()
+        .regex_replace(r'(?ms)^set_ro_vendor_incremental\(\)\n\{\n.*?^\}\n\n', '')
+        .regex_replace(r'(?m)^set_ro_vendor_incremental &\n\n', ''),
+    # The stock sensor HAL keeps the stock transport and protobuf libraries;
+    # the malmo sensor services use their own libssc and libsnsapi.
+    'vendor/lib64/sensors.ssc.so': blob_fixup()
+        .replace_needed('libsnsapi.so', 'libsnsapi-stock.so')
+        .replace_needed('libssc.so', 'libssc-stock.so')
+        .add_needed('libcompiler_rt.so'),
+    'vendor/lib64/libssc-stock.so': blob_fixup()
+        .fix_soname()
+        .replace_needed('libsnsapi.so', 'libsnsapi-stock.so'),
+    'vendor/lib64/libsnsapi-stock.so': blob_fixup()
+        .fix_soname(),
+    # SoftDev's unused installd cpuset scan requires forbidden cross-process access.
+    'vendor/bin/thermal-engine-v2': blob_fixup()
+        .sig_replace(
+            '00 ff ff b0 00 d8 09 91 b3 39 00 94 88 2e 00 d0 00 61 05 b9 20 02 f8 37 a0 18 00 d0 00 20 29 91 a4 f4 ff 97 a0 03 00 34',
+            '00 ff ff b0 00 d8 09 91 00 00 80 12 88 2e 00 d0 00 61 05 b9 20 02 f8 37 a0 18 00 d0 00 20 29 91 a4 f4 ff 97 a0 03 00 34'),
+    'vendor/etc/media_profiles_blair.xml': blob_fixup()
+        .regex_replace(r'\s+maxHFR(?:FrameWidth|FrameHeight|Mode)="[^"]*"', '')
+        .regex_replace(r'\s*<(?:VideoEditorCap|ExportVideoProfile)\b[^>]*/>', ''),
     'system_ext/lib64/libwfdmmsrc_system.so': blob_fixup()
         .add_needed('libaudiobase.so')
         .add_needed('libgui_shim.so'),

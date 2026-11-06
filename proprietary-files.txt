@@ -407,3 +407,9 @@ vendor/lib64/vendor.qti.ims.rcsuce@1.1.so
 vendor/lib64/vendor.qti.ims.rcsuce@1.2.so
 vendor/lib64/vendor.qti.imsrtpservice@3.0-service-Impl.so
 vendor/lib64/vendor.qti.imsrtpservice@3.0.so;MODULE_SUFFIX=_vendor
+
+# Sensors - stock HAL with its own transport and protobuf libraries
+vendor/lib64/libsnsapi.so:vendor/lib64/libsnsapi-stock.so
+vendor/lib64/libssc.so:vendor/lib64/libssc-stock.so
+vendor/lib64/sensors.moto.so;DISABLE_CHECKELF
+vendor/lib64/sensors.ssc.so
