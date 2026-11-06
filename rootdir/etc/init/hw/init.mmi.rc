@@ -1,44 +1,52 @@
 # Chipset-specific file
-
 import /vendor/etc/init/hw/init.mmi.chipset.rc
 
 # Target-specific file
-
 import /vendor/etc/init/hw/init.mmi.overlay.rc
 
 # Moto USB configuration
-
 import /vendor/etc/init/hw/init.mmi.usb.rc
 # Moto debugging
+import /vendor/etc/init/hw/init.mmi.debug.rc
+
+# Moto diag_mdlog configuration
+import /vendor/etc/init/hw/init.mmi.diag_mdlog.rc
 
 import /vendor/etc/init/hw/init.oem.rc
-
 import /vendor/etc/init/hw/init.mmi.common.rc
-
 import /vendor/etc/init/hw/init.mmi.nonab.rc
 
 #Moto wlan configuration
-
 import /vendor/etc/init/hw/init.mmi.wlan.rc
 
 # Moto verified boot extension
-
 import /vendor/etc/init/hw/init.mmi.hab.rc
 
 # Carrier specific script
-
 import /vendor/etc/init/carrier/init.${ro.boot.carrier}.rc
-
 import /vendor/etc/init/carrier/init.default.rc
 
 on early-boot
     write /sys/module/subsystem_restart/parameters/disable_restart_work 0x0
+
+on init
+    chown system log /sys/fs/pstore/console-ramoops-0
+    chmod 0440 /sys/fs/pstore/console-ramoops-0
+    chown system log /sys/fs/pstore/annotate-ramoops-0
+    chmod 0640 /sys/fs/pstore/annotate-ramoops-0
+    chown system log /sys/fs/pstore/dmesg-ramoops-0
+    chmod 0640 /sys/fs/pstore/dmesg-ramoops-0
+    chown system log /proc/driver/mmi_annotate
+    chmod 0640 /proc/driver/mmi_annotate
 
 on early-init && property:ro.bootmode=mot-factory
     setprop ro.vendor.mot.factory true
 
 on early-init && property:ro.vendor.build.motfactory=1
     setprop ro.vendor.mot.factory true
+
+on early-init && property:ro.boot.mmi.bootlog=true
+    start mmi-bootlog-dmesg
 
 on early-init
     # Need to wait for platform path for UTAGs driver to succeed
@@ -55,6 +63,7 @@ on early-init
     # execution of vendor.oem-hw-sh to set
     # required properties.
     setprop ro.carrier ${ro.boot.carrier}
+    setprop ro.sf.lcd_density 280
     setprop ro.vendor.fsg-id ${ro.boot.fsg-id}
     setprop ro.vendor.hw.device ${ro.boot.device}
     setprop ro.vendor.hw.hwrev ${ro.boot.hwrev}
@@ -76,8 +85,6 @@ on early-init
 
     # Trigger priority stage of MMI init
     trigger mmi-priority
-
-    # Log kernel wake-up source
 
 on fs
     insmod /vendor/lib/modules/cci_intf.ko
@@ -176,6 +183,10 @@ on post-fs-data
     # Setup folder for Pre-Activation Kill Switch app (PAKS)
     mkdir /mnt/vendor/persist/paks 02770 vendor_tcmd vendor_tcmd
 
+    # Create directory used by power_supply_logger
+    mkdir /data/vendor/power_supply_logger 0750 vendor_pwric log
+    # Create directory power_supply_logger used by memtest and batt_health
+    mkdir /data/vendor_de/power_supply_logger 0770 root log
 
     # Permissions for Factory Test of Charging Paths
     chown vendor_pwric vendor_pwric /sys/class/power_supply/battery/device/force_chg_auto_enable
@@ -201,12 +212,6 @@ on post-fs-data
     chown vendor_pwric vendor_pwric /sys/class/power_supply/wireless/voltage_now
     chown vendor_pwric vendor_pwric /sys/class/power_supply/wireless/voltage_max
     chmod 0664 /sys/class/power_supply/wireless/voltage_max
-    chown vendor_pwric vendor_pwric /sys/kernel/debug/pmic-votable/CHG_DISABLE/force_val
-    chmod 0664 /sys/kernel/debug/pmic-votable/CHG_DISABLE/force_val
-    chown vendor_pwric vendor_pwric /sys/kernel/debug/pmic-votable/CHG_DISABLE/force_active
-    chmod 0664 /sys/kernel/debug/pmic-votable/CHG_DISABLE/force_active
-    chown vendor_pwric vendor_pwric /sys/kernel/debug/regulator/smb5-vconn/enable
-    chmod 0664 /sys/kernel/debug/regulator/smb5-vconn/enable
 
     chown root vendor_mod /sys/module/qpnp_smbcharger_mmi/parameters/eb_rechrg_start_soc
     chown root vendor_mod /sys/module/qpnp_smbcharger_mmi/parameters/eb_rechrg_stop_soc
@@ -239,6 +244,7 @@ on post-fs-data
     # Setup folder for native to transfer data to NativeDropBoxAgent
     mkdir /data/vendor/dropbox-add 0730 log diag
 
+    # Create panic dump dir.
     mkdir /data/vendor/dontpanic 0750 root log
 
     # Create watchdogd dir.
@@ -256,8 +262,16 @@ on post-fs-data
     # Create directory used by chargeonlymode
     mkdir /data/vendor/chargeonly 0750 root log
 
+    # Subsystem RAM-dumps
+    mkdir /data/vendor/ss-ram-dumps 0750 system log
+    mkdir /data/vendor/ss-ram-dumps/bp-dumps 0750 system log
+    mkdir /data/vendor/ss-ram-dumps/riva-dumps 0750 system log
 
+    # folder for Blueooth ramdump
+    mkdir /data/vendor/bt-ram-dumps 0750 bluetooth log
 
+    # folder for ssrdumps
+    mkdir /data/vendor/ssrdump 0775 root system
 
     #Folder for hardware properties
     mkdir /data/vendor/hardware_revisions 0755 system system
@@ -328,6 +342,7 @@ on boot
    # change ownership of capsensor related sysfs node
    chown system system /sys/class/capsense/reset
    chown system system /sys/class/capsense/int_state
+
 
 service vendor.mmi-block-perm /vendor/bin/init.mmi.block_perm.sh
     class main
@@ -452,7 +467,6 @@ service vendor.aplogd /vendor/bin/aplogd
 
 # from P onwards aplogd cannot read vold.post_fs_data_done so a new property
 # shall be used to allow aplogd checking if FBE has finished /data decryption
-
 on property:vold.post_fs_data_done=*
      setprop vendor.vold.post_fs_data_done ${vold.post_fs_data_done}
 
@@ -460,11 +474,6 @@ service vendor.mmi-boot-sh /vendor/bin/init.mmi.boot.sh
     class core
     user root
     oneshot
-
-# set rkp csr indicatory property
-
-on property:ro.vendor.mot.hw.rkp_csr_uploaded=* && property:sys.boot_completed=1
-    setprop ro.rkp.csr_uploaded ${ro.vendor.mot.hw.rkp_csr_uploaded}
 
 service vendor.mmi-shutdown-sh /vendor/bin/init.mmi.shutdown.sh
     class core
@@ -474,9 +483,15 @@ service vendor.mmi-shutdown-sh /vendor/bin/init.mmi.shutdown.sh
 
 # translate to qcom property name in order to keep the consistent with
 # our legacy property
+on property:persist.vendor.qc.sub.rdump.on=*
+    setprop persist.vendor.ssr.enable_ramdumps ${persist.vendor.qc.sub.rdump.on}
 
+# translate MMI property in order to keep the consistent with QCOM
 on property:ro.vendor.hw.dualsim=true
    setprop persist.radio.multisim.config dsds
+
+on property:persist.vendor.qc.sub.rdump.on=*
+   setprop persist.vendor.ssr.enable_ramdumps ${persist.vendor.qc.sub.rdump.on}
 
 on property:ro.vendor.hw.dualsim=false
    setprop persist.radio.multisim.config ""
@@ -484,7 +499,24 @@ on property:ro.vendor.hw.dualsim=false
 on property:sys.sysctl.swappiness=*
     write /proc/sys/vm/swappiness ${sys.sysctl.swappiness}
 
+service vendor.mbm_spy /vendor/bin/mbm_spy
+    class late_start
+    user system
+    group system
+    oneshot
+    disabled
+
 on property:sys.boot_completed=1
+    start vendor.mbm_spy
+
+on init && property:ro.boot.mmi.bootlog=true
+    start mmi-bootlog-logcat
+    start mmi-bootlog
+
+on property:sys.boot_completed=1 && property:ro.boot.mmi.bootlog=true
+    stop mmi-bootlog-dmesg
+    stop mmi-bootlog-logcat
+    stop mmi-bootlog
 
 service vendor.hw_revs /vendor/bin/hardware_revisions.sh
     class late_start
@@ -576,6 +608,26 @@ service vendor.charge_only_mode /vendor/bin/charge_only_mode
     group graphics system input
     disabled
 
+service vendor.thermal-com /vendor/bin/thermal-engine-v2 --minimode
+    class main
+    user root
+    group root system oem_2907
+    socket thermal-send-client stream 0666 system oem_2907
+    socket thermal-recv-client stream 0660 system oem_2907
+    socket thermal-recv-passive-client stream 0666 system oem_2907
+    socket thermal-send-rule stream 0660 system oem_2907
+    disabled
+
+# bugreport is triggered by holding down volume down, volume up and power
+service bugreport /system/bin/dumpstate -d -p -B -z \
+        -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
+    class main
+    disabled
+    oneshot
+    keycodes 114 115 116
+
+# Override fwpath string when wifi tethering state is changed
+# The fwpath changes on different products, remember to overlay it in product overlay file
 on property:vendor.wifi.tethering=false
     write /sys/module/wlan/parameters/sar_mhs disabled
 
@@ -585,7 +637,6 @@ on property:vendor.wifi.tethering=true
 # Override the AOSP sensor HAL service definition
 # from hardware/interfaces/sensors/2.0/multihal
 # to add input and uhid group access
-
 service vendor.sensors-hal-2-0-multihal /vendor/bin/hw/android.hardware.sensors@2.0-service.multihal
     class hal
     user system
@@ -596,7 +647,6 @@ service vendor.sensors-hal-2-0-multihal /vendor/bin/hw/android.hardware.sensors@
 
 # from hardware/interfaces/sensors/2.1/multihal
 # to add input and uhid group access
-
 service vendor.sensors-hal-2-1-multihal /vendor/bin/hw/android.hardware.sensors@2.1-service.multihal
     class hal
     user system
@@ -607,7 +657,6 @@ service vendor.sensors-hal-2-1-multihal /vendor/bin/hw/android.hardware.sensors@
 
 # from hardware/interfaces/sensors/aidl/multihal
 # to add input and uhid group access
-
 service vendor.sensors-hal-multihal /vendor/bin/hw/android.hardware.sensors-service.multihal
     class hal
     user system
@@ -618,7 +667,6 @@ service vendor.sensors-hal-multihal /vendor/bin/hw/android.hardware.sensors-serv
 
 # Override fwpath string when wpa_supplicant server state is changed
 # The fwpath changes on different products, remember to overlay it in product overlay file
-
 on property:vendor.wifi.station=true
     write /sys/module/wlan/parameters/sar_sta enabled
 
@@ -635,31 +683,21 @@ on property:persist.sys.locale=*
     chmod 0660 /mnt/vendor/persist/chargeonly/locale
 
 # IKSWQ-149109: Force shutter tone on Japan softbank carrier
-
 on property:ro.carrier=softbank
     setprop audio.camerasound.force true
 
 # IKSWT-90913: Force shutter tone on Japan ymobile carrier
-
 on property:ro.carrier=ymobile
     setprop audio.camerasound.force true
-
-on property:ro.sys.force_max_chrg_temp=*
-    write /sys/class/power_supply/battery/device/force_max_chrg_temp ${ro.sys.force_max_chrg_temp}
-
-on property:ro.sys.force_demo_mode=*
-    write /sys/class/power_supply/battery/device/force_demo_mode ${ro.sys.force_demo_mode}
 
 on property:ro.vendor.hw.pvtui=*
     setprop ro.hardware.device.pvtui ${ro.vendor.hw.pvtui}
 
 # restart cameraprovider service to take effect for 3A debugdata
-
 on property:persist.vendor.camera.enable3AInfo=*
     restart vendor.camera-provider
 
 # support clear batt_firstusagedate flag
-
 on property:sys.clear_batt_first_usage_date=true
     write /proc/config/all/new batt_firstusagedate:strX
     wait  /proc/config/batt_firstusagedate/ascii

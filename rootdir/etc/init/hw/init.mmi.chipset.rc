@@ -1,16 +1,40 @@
 # Charge only mode configuration
-
 import /vendor/etc/init/hw/init.mmi.charge_only.rc
+
+on early-init && property:ro.bootmode=mot-factory
+    insmod /vendor/lib/modules/moto_f_usbnet.ko
+
+on early-init && property:ro.vendor.build.motfactory=1
+    mount debugfs debugfs /sys/kernel/debug
+    chmod 0755 /sys/kernel/debug
+    setprop persist.dbg.keep_debugfs_mounted true
 
 on early-boot
     # Permission for Health Storage HAL
     chown system system /sys/devices/platform/soc/4804000.ufshc/manual_gc
     chown system system /sys/devices/platform/soc/4804000.ufshc/ufshid/trigger
+    chmod 0660 /sys/devices/platform/soc/4804000.ufshc/manual_gc
+    chmod 0660 /sys/devices/platform/soc/4804000.ufshc/ufshid/trigger
+
+# Turn on led to indicate device on in factory mode
+on property:ro.bootmode=mot-factory
+    write /sys/class/leds/charging/brightness 255
 
 on boot
-    # Set adaptive charging perms for HAL
-    chown system system /sys/module/qpnp_adaptive_charge/parameters/charging_enabled
-    chmod 0660 /sys/module/qpnp_adaptive_charge/parameters/charging_enabled
+   # Set adaptive charging perms for HAL
+   chown system system /sys/module/qpnp_adaptive_charge/parameters/upper_limit
+   chown system system /sys/module/qpnp_adaptive_charge/parameters/lower_limit
 
 on property:sys.boot_completed=1
     write /sys/devices/platform/soc/soc:mmi,charger/state_sync 1
+
+on post-fs && property:ro.vendor.build.motfactory=1
+    write /sys/devices/platform/soc/soc:mmi,charger/state_sync 1
+    wait /sys/class/power_supply/battery/device/factory_image_mode
+    write /sys/class/power_supply/battery/device/factory_image_mode 1
+
+on property:vendor.boot_completed=1
+    start thermal-engine
+
+on property:dev.bootcomplete=1
+    stop llkd-${ro.debuggable:-0}
