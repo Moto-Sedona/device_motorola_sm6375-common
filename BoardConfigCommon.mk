@@ -41,6 +41,7 @@ BOARD_PREBUILT_DTBOIMAGE := $(KERNEL_PREBUILT_PATH)/dtbo.img
 # fails to boot when they are absent; keep them as on stock.
 BOARD_KERNEL_CMDLINE := \
     androidboot.console=ttyMSM0 \
+    androidboot.serialconsole=0 \
     androidboot.hardware=qcom \
     androidboot.memcg=1 \
     androidboot.usbcontroller=4e00000.dwc3 \
