@@ -244,9 +244,6 @@ on post-fs-data
     # Setup folder for native to transfer data to NativeDropBoxAgent
     mkdir /data/vendor/dropbox-add 0730 log diag
 
-    # Create panic dump dir.
-    mkdir /data/vendor/dontpanic 0750 root log
-
     # Create watchdogd dir.
     mkdir /data/vendor/watchdogd 0750 root log
 
@@ -349,28 +346,10 @@ service vendor.mmi-block-perm /vendor/bin/init.mmi.block_perm.sh
     user root
     oneshot
 
-service vendor.pstore_annotate /vendor/bin/pstore_annotate.sh build
-    class main
-    user system
-    group log
-    oneshot
-
-service vendor.apanic_copy /vendor/bin/apanic_copy.sh
-    class late_start
-    group log
-    oneshot
-    disabled
-
 service vendor.mmi_watchdogd /vendor/bin/mmi_watchdogd
     class core
     user root
     group root system
-    disabled
-
-service vendor.bl_logs_copy /vendor/bin/apanic_copy.sh -i
-    class late_start
-    group log
-    oneshot
     disabled
 
 on charger
@@ -386,12 +365,6 @@ on charger
 
 on tks-charger && property:persist.sys.tksautoboot=1
     setprop sys.powerctl "reboot,tks-charger"
-
-service vendor.apanic_annotate /vendor/bin/apanic_save.sh build
-    class late_start
-    group log
-    oneshot
-    disabled
 
 service vendor.batt_health /vendor/bin/batt_health
     class late_start
@@ -417,37 +390,6 @@ on property:sys.boot_completed=1 && property:ro.vendor.zram.product_swapon=""
     swapon_all /vendor/etc/fstab.qcom
     write /proc/sys/vm/swappiness 100
     setprop sys.sysctl.swappiness 100
-
-on property:sys.boot_completed=1 && property:ro.vendor.bootreason=coldboot
-    start vendor.apanic_copy
-
-on property:ro.vendor.bootreason=watchdog
-    stop surfaceflinger
-    stop zygote
-    stop zygote_secondary
-    stop sensors
-    start vendor.apanic_annotate
-
-on property:ro.vendor.bootreason=pmic_watchdog
-    stop surfaceflinger
-    stop zygote
-    stop zygote_secondary
-    stop sensors
-    start vendor.apanic_annotate
-
-on property:ro.vendor.bootreason=kernel_panic
-    stop surfaceflinger
-    stop zygote
-    stop zygote_secondary
-    stop sensors
-    start vendor.apanic_annotate
-
-on property:ro.vendor.bootreason=hw_warmreset
-    stop surfaceflinger
-    stop zygote
-    stop zygote_secondary
-    stop sensors
-    start vendor.apanic_annotate
 
 on property:persist.vendor.log.aplogd.enable=1
     start vendor.aplogd
