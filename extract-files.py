@@ -48,6 +48,11 @@ lib_fixups: lib_fixups_user_type = {
 
 
 blob_fixups: blob_fixups_user_type = {
+    ('vendor/bin/vendor_modprobe.sh', 'vendor/bin/system_dlkm_modprobe.sh'): blob_fixup()
+        .regex_replace(
+            r'grep -w -v \$\{(blocklist_expr|audio_blocklist_expr|device_blocklist_expr)\}',
+            r'grep -w -v ${\1:--e %}',
+        ),
     # Keep the generated vendor incremental version instead of rewriting it.
     'vendor/bin/init.oem.hw.sh': blob_fixup()
         .regex_replace(r'(?ms)^set_ro_vendor_incremental\(\)\n\{\n.*?^\}\n\n', '')
